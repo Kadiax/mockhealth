@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 public class PersonThreads implements Runnable{
     private Person p;
@@ -20,7 +21,7 @@ public class PersonThreads implements Runnable{
     private List<HealthHistoric> historics;
     private StrapDAO strapDAO;
     private  ResidenceDAO residenceDAO;
-    private static volatile Residence residence;
+    private Random rd;
 
     public PersonThreads(Person p, HealthHistoricDAO healthHistoricDAO, StrapDAO strapDAO, ResidenceDAO residenceDAO){
         this.p=p;
@@ -38,23 +39,54 @@ public class PersonThreads implements Runnable{
 
 
     private void generateHistoric() {
-
-        //Create Historic
-        HealthHistoric h = new HealthHistoric("100","150", "80", "0.45", "100", new Timestamp(new Date().getTime()), p.getStrap() );
-        HealthHistoric h2 = new HealthHistoric("220","180", "90", "0.44", "200", new Timestamp(new Date().getTime()), p.getStrap() );
         //Save Historic in strap
         Strap s = p.getStrap();
-        s.addHealthHistocic(h);
-        s.addHealthHistocic(h2);
-        //System.out.println(p.toString());
+        int i = 0;
+        rd = new Random();
+
+        double hearthrate=rdHearthRate(s);
+        int systolic=rdSysto(s), diastolic=rdDiasto(s) ,stepcounter=0;
+        double sugarLevel= rdSugarLevel(s);
+
+        while(i<4){
+            s.addHealthHistocic(new HealthHistoric(String.valueOf(hearthrate),String.valueOf(systolic), String.valueOf(diastolic), String.valueOf(sugarLevel), String.valueOf(stepcounter), new Timestamp(new Date().getTime()), p.getStrap() ));
+            //increment values
+            int min = 1, max=2;
+            int choice = rd.nextInt(max + 1 - min) + min;
+            if(choice==1){
+                hearthrate+=2; systolic+=10; diastolic+=5; sugarLevel+=0.2; stepcounter=+20;
+               }
+            else{
+                hearthrate-=2; systolic-=5; diastolic-=2; sugarLevel-=0.1; stepcounter=+5;
+            }
+            i++;
+        }
 
     }
 
-    public static Residence getResidence() {
-        return residence;
+    private double rdHearthRate(Strap s) {
+         float min = Float.parseFloat(s.getMinvalueref());
+        float max= Float.parseFloat(s.getMaxvalueref());
+        return   min + Math.random() * (max - min);
     }
 
-    public static void setResidence(Residence residence) {
-        PersonThreads.residence = residence;
+    private int rdSysto(Strap s) {
+        int min= Math.abs(Integer.parseInt(s.getMinsysto()));
+        int max= Math.abs(Integer.parseInt(s.getMaxsysto()));
+
+        return rd.nextInt(max + 1 - min) + min;
+    }
+
+    private int rdDiasto(Strap s) {
+        int min= Math.abs(40);
+        int max= Math.abs(Integer.parseInt(s.getMaxdiasto()));
+
+        return rd.nextInt(max + 1 - min) + min;
+    }
+
+    private double rdSugarLevel(Strap s) {
+        float min = Float.parseFloat(s.getMinglyc());
+        float max= Float.parseFloat(s.getMaxglyc());
+        return   min + Math.random() * (max - min);
     }
 }

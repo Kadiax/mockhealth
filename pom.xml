@@ -10,7 +10,7 @@
     </parent>
     <groupId>lifeprotect</groupId>
     <artifactId>mock</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1-RELEASE</version>
     <name>mock</name>
     <description>Mock data</description>
 
