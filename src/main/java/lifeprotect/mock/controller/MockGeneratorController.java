@@ -70,7 +70,7 @@ public class MockGeneratorController {
 
     private void generateMockData() {
 
-            mckd =new MockHealthData(residenceSaved, healthHistoricDAO);
+            mckd =new MockHealthData(residenceSaved, healthHistoricDAO, strapDAO, residenceDAO);
 
     }
 

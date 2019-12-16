@@ -46,6 +46,7 @@ public class Strap extends IOT{
     }
 
     public Strap() {
+        healthhistorics = new ArrayList<>();
     }
 
     public String getMinsysto() {
@@ -105,19 +106,7 @@ public class Strap extends IOT{
         this.person = person;
     }
 
-    @Override
-    public String toString() {
-        return "Strap{" +
-                "minsysto='" + minsysto + '\'' +
-                "minsysto='" + minsysto + '\'' +
-                ", maxsysto='" + maxsysto + '\'' +
-                ", maxdiasto='" + maxdiasto + '\'' +
-                ", minglyc='" + minglyc + '\'' +
-                ", maxglyc='" + maxglyc + '\'' +
-                ", minsteps='" + minsteps + '\'' +
-                ", person=" + person +
-                '}';
-    }
+
 
     public List<HealthHistoric> getHealthhistorics() {
         return healthhistorics;
@@ -127,7 +116,9 @@ public class Strap extends IOT{
         this.healthhistorics = healthhistorics;
     }
 
-    public void addHealthHistocic(HealthHistoric historic){
+    public void addHealthHistocic(HealthHistoric historic){System.out.println(historic);
+    if(healthhistorics==null) healthhistorics=new ArrayList<>();
+
         if(!healthhistorics.contains(historic)){
             healthhistorics.add(historic);
             historic.setStrap(this);
@@ -135,6 +126,8 @@ public class Strap extends IOT{
     }
 
     public void removeHealthHistocic(HealthHistoric historic){
+        if(healthhistorics==null) healthhistorics=new ArrayList<>();
+
         if(healthhistorics.contains(historic)){
             healthhistorics.remove(historic);
             historic.removeStrap();
