@@ -26,12 +26,16 @@ public class MockHealthData {
         this.residenceDAO = residenceDAO;
         generatePersonsThreads();
         startMockHealthData();
+        //saveResidence and historics of persons
+        residenceDAO.saveAndFlush(residence);
     }
 
     public void generatePersonsThreads()  {
-        PersonThreads.setResidence(residence);
+        //PersonThreads.setResidence(residence);
         for (Person p : residence.getPeople()){
-            personThreads.add(new PersonThreads(p, healthHistoricDAO, strapDAO, residenceDAO));
+            PersonThreads pth = new PersonThreads(p, healthHistoricDAO, strapDAO, residenceDAO);
+            //pth.setResidence(residence);
+            personThreads.add(pth);
         }
     }
 

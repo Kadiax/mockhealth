@@ -82,7 +82,7 @@ public class MockGeneratorController {
             Strap s = new Strap();
 
             //Create an IOT
-            s.setStartdate(new Timestamp(new Date().getTime()));
+            //s.setStartdate(new Timestamp(new Date().getTime()));
             s.setIpadress(generateIpAddress());
             //s.setStatus("");
             //s.setState("");

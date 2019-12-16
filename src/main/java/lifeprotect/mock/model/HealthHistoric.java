@@ -20,15 +20,19 @@ public class HealthHistoric extends PersistableElement{
     @Column(name="stepcounter")
     private String stepcounter;
 
+    @Column(name="startdate")
+    private Timestamp startdate;
+
     @ManyToOne(cascade = CascadeType.ALL)
     private Strap strap;
 
-    public HealthHistoric(String hearthrate, String systolic, String diastolic, String sugarlevel, String stepcounter, Strap strap) {
+    public HealthHistoric(String hearthrate, String systolic, String diastolic, String sugarlevel, String stepcounter, Timestamp startdate, Strap strap) {
         this.hearthrate = hearthrate;
         this.systolic = systolic;
         this.diastolic = diastolic;
         this.sugarlevel = sugarlevel;
         this.stepcounter = stepcounter;
+        this.startdate = startdate;
         this.strap = strap;
     }
 
@@ -87,6 +91,14 @@ public class HealthHistoric extends PersistableElement{
         this.strap = null;
     }
 
+    public Timestamp getStartdate() {
+        return startdate;
+    }
+
+    public void setStartdate(Timestamp startdate) {
+        this.startdate = startdate;
+    }
+
     @Override
     public String toString() {
         return "HealthHistoric{" +
@@ -95,6 +107,7 @@ public class HealthHistoric extends PersistableElement{
                 ", diastolic='" + diastolic + '\'' +
                 ", sugarlevel='" + sugarlevel + '\'' +
                 ", stepcounter='" + stepcounter + '\'' +
+                ", startdate=" + startdate +
                 '}';
     }
 }

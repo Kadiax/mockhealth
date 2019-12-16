@@ -8,7 +8,9 @@ import lifeprotect.mock.model.Person;
 import lifeprotect.mock.model.Residence;
 import lifeprotect.mock.model.Strap;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class PersonThreads implements Runnable{
@@ -18,7 +20,7 @@ public class PersonThreads implements Runnable{
     private List<HealthHistoric> historics;
     private StrapDAO strapDAO;
     private  ResidenceDAO residenceDAO;
-    private static Residence residence;
+    private static volatile Residence residence;
 
     public PersonThreads(Person p, HealthHistoricDAO healthHistoricDAO, StrapDAO strapDAO, ResidenceDAO residenceDAO){
         this.p=p;
@@ -34,15 +36,17 @@ public class PersonThreads implements Runnable{
         generateHistoric();
     }
 
+
     private void generateHistoric() {
 
         //Create Historic
-        HealthHistoric h = new HealthHistoric("100","150", "80", "0.45", "100",p.getStrap() );
+        HealthHistoric h = new HealthHistoric("100","150", "80", "0.45", "100", new Timestamp(new Date().getTime()), p.getStrap() );
+        HealthHistoric h2 = new HealthHistoric("220","180", "90", "0.44", "200", new Timestamp(new Date().getTime()), p.getStrap() );
         //Save Historic in strap
         Strap s = p.getStrap();
         s.addHealthHistocic(h);
-        //update persons because of update strap
-        residence = residenceDAO.saveAndFlush(residence);
+        s.addHealthHistocic(h2);
+        //System.out.println(p.toString());
 
     }
 

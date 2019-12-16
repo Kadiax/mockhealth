@@ -23,7 +23,6 @@ password VARCHAR (255),
 deseas VARCHAR(255),
 ismobile VARCHAR(255),
 userevaluation INT,
-isathletic VARCHAR (255),
 userrole VARCHAR (255),
 residence_id  BIGINT UNSIGNED NOT NULL,
 CONSTRAINT FK_person_residence_id FOREIGN KEY (residence_id) REFERENCES residence(id)

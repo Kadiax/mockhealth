@@ -45,18 +45,6 @@ public class Person extends PersistableElement{
     @Enumerated(EnumType.STRING)
     private PersonStatus userrole;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "person")
-    private List<Light> lights;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "person")
-    private List<Shutter> shutters;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "person")
-    private List<Heater> heaters;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "person")
-    private List<Clock> clocks;
-
     @ManyToOne(cascade = CascadeType.ALL)
     private Residence residence;
 
@@ -147,44 +135,12 @@ public class Person extends PersistableElement{
         this.userrole = userrole;
     }
 
-    public List<Light> getLights() {
-        return lights;
-    }
-
-    public void setLights(List<Light> lights) {
-        this.lights = lights;
-    }
-
-    public List<Shutter> getShutters() {
-        return shutters;
-    }
-
-    public void setShutters(List<Shutter> shutters) {
-        this.shutters = shutters;
-    }
-
     public Strap getStrap() {
         return strap;
     }
 
     public void setStrap(Strap strap) {
         this.strap = strap;
-    }
-
-    public List<Heater> getHeaters() {
-        return heaters;
-    }
-
-    public void setHeaters(List<Heater> heaters) {
-        this.heaters = heaters;
-    }
-
-    public List<Clock> getClocks() {
-        return clocks;
-    }
-
-    public void setClocks(List<Clock> clocks) {
-        this.clocks = clocks;
     }
 
     public Residence getResidence() {
@@ -251,8 +207,6 @@ public class Person extends PersistableElement{
                 ", ismobile='" + ismobile + '\'' +
                 ", userevaluation=" + userevaluation +
                 ", userrole=" + userrole +
-                ", lights=" + lights +
-                ", strap=" + strap +
                 '}';
     }
 
