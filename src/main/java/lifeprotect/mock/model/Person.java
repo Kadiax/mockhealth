@@ -42,9 +42,6 @@ public class Person extends PersistableElement{
     @Column(name="userevaluation")
     private Long userevaluation;
 
-    @Column(name="isathletic")
-    private String isathletic;
-
     @Enumerated(EnumType.STRING)
     private PersonStatus userrole;
 
@@ -69,7 +66,7 @@ public class Person extends PersistableElement{
 
     public Person(){}
 
-    public Person(String firstName, String lastName, String birthdate, String email, String phone, String handicap, String averageincome, String login, String password, String deseas, String ismobile, Long userevaluation, PersonStatus userrole,String isathletic) {
+    public Person(String firstName, String lastName, String birthdate, String email, String phone, String handicap, String averageincome, String login, String password, String deseas, String ismobile, Long userevaluation, PersonStatus userrole) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthdate = birthdate;
@@ -82,7 +79,6 @@ public class Person extends PersistableElement{
         this.deseas = deseas;
         this.ismobile = ismobile;
         this.userevaluation = userevaluation;
-        this.isathletic = isathletic;
         this.userrole = userrole;
 
     }
@@ -268,11 +264,4 @@ public class Person extends PersistableElement{
         this.residence= null;
     }
 
-    public String getIsathletic() {
-        return isathletic;
-    }
-
-    public void setIsathletic(String isathletic) {
-        this.isathletic = isathletic;
-    }
 }

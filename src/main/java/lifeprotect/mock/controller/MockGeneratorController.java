@@ -1,9 +1,7 @@
 package lifeprotect.mock.controller;
 
-import lifeprotect.mock.dao.MockResidentDAO;
-import lifeprotect.mock.dao.PersonDAO;
-import lifeprotect.mock.dao.ResidenceDAO;
-import lifeprotect.mock.dao.StrapDAO;
+import lifeprotect.mock.dao.*;
+import lifeprotect.mock.datamock.MockHealthData;
 import lifeprotect.mock.forms.MockForm;
 import lifeprotect.mock.model.IOT;
 import lifeprotect.mock.model.Person;
@@ -24,13 +22,16 @@ public class MockGeneratorController {
     private List<IOT> straps= new ArrayList<>();
     private MockForm mf;
     private StrapDAO strapDAO;
+    private MockHealthData mckd;
+    private HealthHistoricDAO healthHistoricDAO;
 
-    public MockGeneratorController(MockForm mf, PersonDAO pdao, ResidenceDAO rDAO, StrapDAO strapDAO){
+    public MockGeneratorController(MockForm mf, PersonDAO pdao, ResidenceDAO rDAO, StrapDAO strapDAO, HealthHistoricDAO healthHistoricDAO){
        this.mf = mf;
         mockDAO = new MockResidentDAO(this.mf);
         personDAO = pdao;
         residenceDAO = rDAO;
         this.strapDAO = strapDAO;
+        this.healthHistoricDAO = healthHistoricDAO;
     }
 
     public void  getPersonsMockFromOpenData(){
@@ -62,7 +63,15 @@ public class MockGeneratorController {
             e.printStackTrace();
         }
 
+        //Sart simulation
         generateStraps();
+        generateMockData();
+    }
+
+    private void generateMockData() {
+
+            mckd =new MockHealthData(residenceSaved, healthHistoricDAO);
+
     }
 
     //calcule of threshold for straps based on persons

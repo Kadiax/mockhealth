@@ -81,7 +81,7 @@ public class MockResidentDAO {
             Long userevaluation = null;
             PersonStatus userRole = PersonStatus.RESIDENT;
 
-           Person p = new Person(firstName, lastName, birthdate, email, phone, handicap, averageincome, login, password, deseas, ismobile, userevaluation, userRole, "false");
+           Person p = new Person(firstName, lastName, birthdate, email, phone, handicap, averageincome, login, password, deseas, ismobile, userevaluation, userRole);
 
            //repect the number of bloodPressure
             if (mf.getBloodPressurepPb()>0){
@@ -105,7 +105,6 @@ public class MockResidentDAO {
 
             //repect the number of Athletic (the last person of the list)
             if (mf.getNbAthletic()>0 && mf.getNbresident()>= mf.getNbAthletic()) {
-                p.setIsathletic("true");
                 p.setIsmobile("true");
                 mf.setNbAthletic(mf.getNbAthletic()-1);
             }

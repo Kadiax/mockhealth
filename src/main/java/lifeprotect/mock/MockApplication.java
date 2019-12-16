@@ -1,6 +1,7 @@
 package lifeprotect.mock;
 
 import lifeprotect.mock.controller.MockGeneratorController;
+import lifeprotect.mock.dao.HealthHistoricDAO;
 import lifeprotect.mock.dao.PersonDAO;
 import lifeprotect.mock.dao.ResidenceDAO;
 import lifeprotect.mock.dao.StrapDAO;
@@ -20,9 +21,10 @@ public class MockApplication  implements CommandLineRunner {
     private MockGeneratorController mgc;
     private PersonDAO pdao;
     private ResidenceDAO residenceDAO;
-    StrapDAO strapDAO;
+    private StrapDAO strapDAO;
+    private HealthHistoricDAO healthHistoricDAO;
 
-    public MockApplication(PersonDAO pdao, ResidenceDAO rDAO, StrapDAO strapDAO){
+    public MockApplication(PersonDAO pdao, ResidenceDAO rDAO, StrapDAO strapDAO, HealthHistoricDAO healthHistoricDAO){
         scanner = new Scanner(System.in);
         this.pdao = pdao;
         residenceDAO = rDAO;
@@ -123,7 +125,7 @@ public class MockApplication  implements CommandLineRunner {
         }catch (Exception e){System.out.println("Invalid character: "+e.getMessage());}
 
         //generate resident mock
-        mgc = new MockGeneratorController(mf, pdao, residenceDAO, strapDAO);
+        mgc = new MockGeneratorController(mf, pdao, residenceDAO, strapDAO, healthHistoricDAO);
         mgc.getPersonsMockFromOpenData();
     }
 
