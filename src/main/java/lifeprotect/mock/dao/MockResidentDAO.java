@@ -6,18 +6,21 @@ import lifeprotect.mock.model.Diseas;
 import lifeprotect.mock.model.Person;
 import lifeprotect.mock.model.PersonStatus;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.ResourceUtils;
+
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MockResidentDAO {
-    private final static String RESOURCES_PATH = "src/main/resources/";
-    private final static String ELEVES_FILE_NAME = "MOCK_DATA.csv";
+   private final static String RESOURCES_PATH = "src/main/resources/";
+    private final static String FILE_NAME = "mock.csv";
     private final static char SEPARATOR = ',';
 
     private MockForm mf;
@@ -28,20 +31,22 @@ public class MockResidentDAO {
 
     public List<Person> findPersons() throws IOException {
 
-        File file = new File(RESOURCES_PATH + ELEVES_FILE_NAME);
-        FileReader fr = null;
-        try {
-            fr = new FileReader(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        CSVReader csvReader = new CSVReader(fr, SEPARATOR);
+        Set<String> setOfPersons = new HashSet<String>();
+
+        ClassPathResource cl = new ClassPathResource("mock.csv");
+        URL url = cl.getURL();
+         BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
+
+            Stream<String> stream = br.lines();
+            setOfPersons  = stream.collect(Collectors.toSet());
+            //System.out.println(setOfPersons );
 
         //ReadData
         List<String[] > data = new ArrayList<String[] >();
 
-        String[] nextLine = null;
-        while ((nextLine = csvReader.readNext()) != null) {
+        Iterator<String> it = setOfPersons.iterator();
+        while (it.hasNext()) {
+            String[] nextLine = it.next().split(",");
             int size = nextLine.length;
 
             // ligne vide

@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>lifeprotect</groupId>
-    <artifactId>mock</artifactId>
+    <artifactId>mock-health-data</artifactId>
     <version>0.0.1-RELEASE</version>
-    <name>mock</name>
+    <name>mock-health-data</name>
     <description>Mock data</description>
 
     <properties>
