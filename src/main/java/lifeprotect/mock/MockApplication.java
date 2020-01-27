@@ -29,6 +29,7 @@ public class MockApplication  implements CommandLineRunner {
         this.pdao = pdao;
         residenceDAO = rDAO;
         this.strapDAO = strapDAO;
+        this.healthHistoricDAO = healthHistoricDAO;
     }
 
     @Override
@@ -37,7 +38,8 @@ public class MockApplication  implements CommandLineRunner {
         while (true){
             System.out.println("******************MENU*******************");
             System.out.println("-1- Start Mock");
-            System.out.println("-2- exit");
+            System.out.println("-2- delete mock data");
+            System.out.println("-3- exit");
 
             try{
                 choice = Integer.parseInt(scanner.nextLine());
@@ -48,8 +50,11 @@ public class MockApplication  implements CommandLineRunner {
                     fillMockForm();
                     break;
                 case 2:
-                    scanner.close();
                     dropData();
+                    System.exit(0);
+                    break;
+                case 3:
+                    scanner.close();
                     System.exit(0);
                     break;
                 default:
@@ -128,7 +133,12 @@ public class MockApplication  implements CommandLineRunner {
         mgc.getPersonsMockFromOpenData();
     }
 
-    private void dropData() {}
+    private void dropData() {
+        if (mgc==null)
+            System.out.println("no data on database");
+        else
+            mgc.dropMockData();
+    }
 
 
     public static void main(String[] args) {

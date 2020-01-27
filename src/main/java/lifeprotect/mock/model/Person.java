@@ -48,8 +48,7 @@ public class Person extends PersistableElement{
     @ManyToOne(cascade = CascadeType.ALL)
     private Residence residence;
 
-    @PrimaryKeyJoinColumn
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "person")
     private Strap strap;
 
     public Person(){}
@@ -193,7 +192,7 @@ public class Person extends PersistableElement{
 
     @Override
     public String toString() {
-        return "Person{" +
+        return "Person{" +super.getId()+
                 "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", birthdate='" + birthdate + '\'' +

@@ -3,10 +3,7 @@ package lifeprotect.mock.controller;
 import lifeprotect.mock.dao.*;
 import lifeprotect.mock.datamock.MockHealthData;
 import lifeprotect.mock.forms.MockForm;
-import lifeprotect.mock.model.IOT;
-import lifeprotect.mock.model.Person;
-import lifeprotect.mock.model.Residence;
-import lifeprotect.mock.model.Strap;
+import lifeprotect.mock.model.*;
 
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -24,7 +21,7 @@ public class MockGeneratorController {
     private StrapDAO strapDAO;
     private MockHealthData mckd;
     private HealthHistoricDAO healthHistoricDAO;
-
+    private PersonDAO pdao;
     //HEARTH RATE
     private final static int MIN_HEARTH_RATE = 50;
     private final static int MIN_HEARTH_RATE_FOR_ATHLETE = 30;
@@ -48,6 +45,7 @@ public class MockGeneratorController {
         this.strapDAO = strapDAO;
         this.healthHistoricDAO = healthHistoricDAO;
         persons= new ArrayList<Person>();
+        this.pdao=pdao;
     }
 
     public void  getPersonsMockFromOpenData(){
@@ -144,7 +142,7 @@ public class MockGeneratorController {
 
     private void generateMockData() {
 
-            mckd =new MockHealthData(residenceSaved, healthHistoricDAO, strapDAO, residenceDAO);
+            mckd =new MockHealthData(residenceSaved, healthHistoricDAO, strapDAO, residenceDAO, pdao);
 
     }
 
@@ -167,5 +165,26 @@ public class MockGeneratorController {
         ip += r.nextInt(255);
 
         return ip;
+    }
+
+    public boolean dropMockData(){
+        try {
+            //delete historics
+            healthHistoricDAO.deleteAll();
+
+            //delete straps-persons-residence
+            strapDAO.deleteAll();
+
+
+            //delete persons
+            //personDAO.deleteAll();
+
+            //delete residence
+            //residenceDAO.deleteAll();
+            return true;
+        }catch (Exception ex){
+            System.err.println("Error drop data: "+ex.getMessage());
+        }
+        return false;
     }
 }

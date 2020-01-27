@@ -22,6 +22,8 @@ public class PersonThreads implements Runnable{
     private StrapDAO strapDAO;
     private  ResidenceDAO residenceDAO;
     private Random rd;
+    private static Residence residence;
+
 
     public PersonThreads(Person p, HealthHistoricDAO healthHistoricDAO, StrapDAO strapDAO, ResidenceDAO residenceDAO){
         this.p=p;
@@ -38,27 +40,30 @@ public class PersonThreads implements Runnable{
     }
 
     private void generateHistoric() {
-        //Save Historic in strap
-        Strap s = p.getStrap();
         int i = 0;
         rd = new Random();
 
-        double hearthrate=rdHearthRate(s);
-        int systolic=rdSysto(s), diastolic=rdDiasto(s) ,stepcounter=0;
-        double sugarLevel= rdSugarLevel(s);
+        double hearthrate=rdHearthRate(p.getStrap());
+        int systolic=rdSysto(p.getStrap()), diastolic=rdDiasto(p.getStrap()) ,stepcounter=0;
+        double sugarLevel= rdSugarLevel(p.getStrap());
 
         while(i<4){
             //increment values
             int min = 1, max=2;
             int choice = rd.nextInt(max + 1 - min) + min;
             if(choice==1){
-                hearthrate+=2; systolic+=10; diastolic+=5; sugarLevel+=0.2; stepcounter=stepcounter+20;
+                hearthrate+=2; systolic+=10; diastolic+=5; sugarLevel+=0.2; stepcounter=stepcounter+3;
                }
             else{
-                hearthrate-=2; systolic-=5; diastolic-=2; sugarLevel-=0.1; stepcounter=stepcounter+5;
+                hearthrate-=2; systolic-=5; diastolic-=2; sugarLevel-=0.1; stepcounter=stepcounter+2;
             }
             i++;
-            s.addHealthHistocic(new HealthHistoric(String.valueOf(hearthrate),String.valueOf(systolic), String.valueOf(diastolic), String.valueOf(sugarLevel), String.valueOf(stepcounter), new Timestamp(new Date().getTime()), p.getStrap() ));
+
+            HealthHistoric h = new HealthHistoric(String.valueOf(hearthrate),String.valueOf(systolic), String.valueOf(diastolic), String.valueOf(sugarLevel), String.valueOf(stepcounter), new Timestamp(new Date().getTime()), p.getStrap().getId() );
+            //healthHistoricDAO.saveAndFlush(h);
+
+            System.out.println(healthHistoricDAO.saveAndFlush(h));
+
             //wait
             try {
                 Thread.sleep(2000);
