@@ -29,7 +29,7 @@ public class MockResidentDAO {
         this.mf = mf;
     }
 
-    public List<Person> findPersons() throws IOException {
+    public List<Person> createPersons() throws IOException {
 
         Set<String> setOfPersons = new HashSet<String>();
 

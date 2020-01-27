@@ -24,10 +24,13 @@ public class MockHealthData {
         this.strapDAO = strapDAO;
         this.healthHistoricDAO = healthHistoricDAO;
         this.residenceDAO = residenceDAO;
+
+        //Start simulation
         generatePersonsThreads();
         startMockHealthData();
+
         //saveResidence and historics of persons
-        residenceDAO.saveAndFlush(residence);
+        //residenceDAO.saveAndFlush(residence);
     }
 
     public void generatePersonsThreads()  {

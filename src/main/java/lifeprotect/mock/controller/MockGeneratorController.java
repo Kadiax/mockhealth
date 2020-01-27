@@ -17,7 +17,7 @@ public class MockGeneratorController {
     private PersonDAO personDAO;
     private ResidenceDAO residenceDAO;
 
-    private List<Person> persons= new ArrayList<Person>();
+    private List<Person> persons;
     private Residence residenceSaved= null;
     private List<IOT> straps= new ArrayList<>();
     private MockForm mf;
@@ -25,18 +25,35 @@ public class MockGeneratorController {
     private MockHealthData mckd;
     private HealthHistoricDAO healthHistoricDAO;
 
+    //HEARTH RATE
+    private final static int MIN_HEARTH_RATE = 50;
+    private final static int MIN_HEARTH_RATE_FOR_ATHLETE = 30;
+    private final static int MIN_STEPS_NUMBER_BY_DAY = 7000;
+    //LOW BLOOD PRESSURE
+    private final static int MIN_SYSTOLIC = 90;
+    //HIGH BLOOD PRESSURE
+    private final static int MAX_SYSTOLIC = 130;
+    private final static int MAX_DIASTOLIC = 85;
+    //DIABETIC
+    private final static double MIN_GLYC = 0.45;
+    private final static double MAX_GLYC = 1.26;
+
+
     public MockGeneratorController(MockForm mf, PersonDAO pdao, ResidenceDAO rDAO, StrapDAO strapDAO, HealthHistoricDAO healthHistoricDAO){
        this.mf = mf;
+       //openning of csv file and creation of persons
         mockDAO = new MockResidentDAO(this.mf);
         personDAO = pdao;
         residenceDAO = rDAO;
         this.strapDAO = strapDAO;
         this.healthHistoricDAO = healthHistoricDAO;
+        persons= new ArrayList<Person>();
     }
 
     public void  getPersonsMockFromOpenData(){
         try {
-            List<Person> personsMock = mockDAO.findPersons();
+            //Creation of persons from csv file
+            List<Person> personsMock = mockDAO.createPersons();
 
          // create only one residence
             if (residenceSaved==null) {
@@ -48,13 +65,15 @@ public class MockGeneratorController {
                 residenceSaved = residenceDAO.saveAndFlush(residence);
             }
 
-        //insert resident to in DB
+        //insert persons into residence
         for (Person p : personsMock) {
             residenceSaved.addPerson(p);
             residenceSaved = residenceDAO.saveAndFlush(residenceSaved);
         }
 
         persons = residenceSaved.getPeople();
+
+        //Display persons
             for (Person p : persons) {
                 System.out.println(p);
             }
@@ -63,59 +82,50 @@ public class MockGeneratorController {
             e.printStackTrace();
         }
 
-        //Sart simulation
+        //Start simulation
         generateStraps();
         generateMockData();
     }
 
-    private void generateMockData() {
-
-            mckd =new MockHealthData(residenceSaved, healthHistoricDAO, strapDAO, residenceDAO);
-
-    }
-
-    //calcule of threshold for straps based on persons
+    //calcul of thresholds based on persons
     public void generateStraps(){
         int i =0;
 
         while(persons.size()>i){
             Strap s = new Strap();
 
-            //Create an IOT
-            //s.setStartdate(new Timestamp(new Date().getTime()));
+            //Creation of a strap
             s.setIpadress(generateIpAddress());
-            //s.setStatus("");
-            //s.setState("");
 
             // min threshold for heartRate is not the same for athletic people
             if (Boolean.parseBoolean(persons.get(i).getIsmobile())) {
-                s.setMinvalueref("30");
-                s.setMinsteps("7000");
+                s.setMinvalueref(""+MIN_HEARTH_RATE);
             }else{
-                s.setMinvalueref("50");
+                s.setMinvalueref(""+MIN_HEARTH_RATE_FOR_ATHLETE);
             }
 
+            //fill the steps number
+            s.setMinsteps(""+MIN_STEPS_NUMBER_BY_DAY);
+
             //calcul of max threshold for heartRate (FC max = 207 – 0,7 x age)
-            double fcmax = 207-0.7*ageCalculator(persons.get(i));
-            s.setMaxvalueref(String.valueOf(fcmax));
-            //System.out.println(fcmax+"------------------------");
+            double fcMax = 207-0.7*ageCalculator(persons.get(i));
+            s.setMaxvalueref(String.valueOf(fcMax));
 
             //BLOOD PRESSURE
             //LOW BLOOD PRESSURE: min systolic 90 mmHg
-            s.setMinsysto("90");
+            s.setMinsysto(""+MIN_SYSTOLIC);
             //HIGH BLOOD PRESSURE : max systo 130, max diasto 85
-            s.setMaxsysto("130");
-            s.setMaxdiasto("85");
+            s.setMaxsysto(""+MAX_SYSTOLIC);
+            s.setMaxdiasto(""+MAX_DIASTOLIC);
 
             //DIABETIC
             //hypoglycemia 0,45
-            s.setMinglyc("0.45");
+            s.setMinglyc(""+MIN_GLYC);
             //hyperglycemia 1,26
-            s.setMaxglyc("1.26");
-
+            s.setMaxglyc(""+MAX_GLYC);
 
             s.setPerson(persons.get(i));
-            //System.out.println(s.toString());
+
             i++;
         }
 
@@ -124,13 +134,20 @@ public class MockGeneratorController {
         //update persons array
         persons = residenceSaved.getPeople();
 
-        //Display straps
+        //Save straps into array
         for (Person p : persons) {
             IOT s = p.getStrap();
             straps.add(s);
             //System.out.println(straps);
         }
     }
+
+    private void generateMockData() {
+
+            mckd =new MockHealthData(residenceSaved, healthHistoricDAO, strapDAO, residenceDAO);
+
+    }
+
 
     public int ageCalculator(Person p){
         String[] tabGetDate = p.getBirthdate().split(" ");

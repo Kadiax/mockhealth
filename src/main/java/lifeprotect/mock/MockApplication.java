@@ -45,11 +45,11 @@ public class MockApplication  implements CommandLineRunner {
 
             switch (choice) {
                 case 1:
-                    mockform();
+                    fillMockForm();
                     break;
                 case 2:
                     scanner.close();
-                    dropdata();
+                    dropData();
                     System.exit(0);
                     break;
                 default:
@@ -60,7 +60,7 @@ public class MockApplication  implements CommandLineRunner {
     }
 
     //Form to mock resident
-    private void mockform() {
+    private void fillMockForm() {
         MockForm mf = new MockForm();
 
         System.out.println("-------------------Mock------------------");
@@ -121,7 +121,6 @@ public class MockApplication  implements CommandLineRunner {
                 mf.setNbAthletic(nbr);
             }
 
-
         }catch (Exception e){System.out.println("Invalid character: "+e.getMessage());}
 
         //generate resident mock
@@ -129,8 +128,7 @@ public class MockApplication  implements CommandLineRunner {
         mgc.getPersonsMockFromOpenData();
     }
 
-    private void dropdata() {
-    }
+    private void dropData() {}
 
 
     public static void main(String[] args) {
