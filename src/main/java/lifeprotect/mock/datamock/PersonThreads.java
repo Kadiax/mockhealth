@@ -56,14 +56,46 @@ public class PersonThreads implements Runnable{
         double sugarLevel= rdSugarLevel(p.getStrap());
 
         while(i<4){
-            //increment values
-            int min = 1, max=2;
+            /*3 Choices : 1)increment all values, 2)decrement values or lower the stepscounter, 3)generate alerts*/
+            int min = 1, max=3;
             int choice = rd.nextInt(max + 1 - min) + min;
+            //increment values
             if(choice==1){
                 hearthrate+=2; systolic+=10; diastolic+=5; sugarLevel+=0.2; stepcounter=stepcounter+3;
-               }
-            else{
+            }
+            //decrement values
+            else if(choice==2){
                 hearthrate-=2; systolic-=5; diastolic-=2; sugarLevel-=0.1; stepcounter=stepcounter+2;
+            }//create alerts
+            else{
+                //while alert variable is false we stay in the alert generator
+                boolean alert=false;
+                while(!alert) {
+                    int mini = 1, maxi = 2;
+                    int alertchoice = rd.nextInt(maxi + 1 - mini) + mini;
+                    //increment
+                    if (alertchoice == 1) {
+                        hearthrate += 20;
+                        systolic += 20;
+                        diastolic += 10;
+                        sugarLevel += 0.6;
+                        stepcounter = stepcounter - 0;
+                    } else {//decrement
+                        hearthrate -= 20;
+                        systolic -= 20;
+                        diastolic -= 10;
+                        sugarLevel -= 0.6;
+                        stepcounter = stepcounter - 0;
+                    }
+                    HealthHistoric h = new HealthHistoric(String.valueOf(hearthrate), String.valueOf(systolic), String.valueOf(diastolic), String.valueOf(sugarLevel), String.valueOf(stepcounter), new Timestamp(new Date().getTime()), p.getStrap().getId());
+                    System.err.println(healthHistoricDAO.saveAndFlush(h));
+
+                    //TODO isAlert
+                    if (isAlert(h)) {
+                        alert = true;
+                    }
+                }
+                break;
             }
 
             HealthHistoric h = new HealthHistoric(String.valueOf(hearthrate),String.valueOf(systolic), String.valueOf(diastolic), String.valueOf(sugarLevel), String.valueOf(stepcounter), new Timestamp(new Date().getTime()), p.getStrap().getId() );
@@ -89,7 +121,42 @@ public class PersonThreads implements Runnable{
 
         }
 
-    //}
+    private boolean isAlert(HealthHistoric h) {
+        Strap s = p.getStrap();
+        boolean isAlert = false;
+        //test //HIGH HEARTH RATE
+        if (Integer.parseInt(h.getHearthrate())>Integer.parseInt(s.getMaxvalueref())){
+            //TODO AlertDAO
+            isAlert=true;
+        }
+        //test //LOW HEARTH RATE
+        if (Integer.parseInt(h.getHearthrate())< Integer.parseInt(s.getMinvalueref())){
+            isAlert=true;
+        }
+        //test LOW BLOOD PRESSURE
+        if (Integer.parseInt(h.getSystolic())< Integer.parseInt(s.getMinsysto())){
+            isAlert=true;
+        }
+
+        //test HIGH BLOOD PRESSURE
+        if (Integer.parseInt(h.getSystolic())>Integer.parseInt(s.getMaxsysto()) &&
+                Integer.parseInt(h.getDiastolic())>Integer.parseInt(s.getMaxdiasto())){
+            isAlert=true;
+        }
+
+        //test DIABETIC
+        //HYPERGLYCEMIA
+        if (Integer.parseInt(h.getSugarlevel())>Integer.parseInt(s.getMaxglyc())) {
+            isAlert=true;
+        }
+        //HYPOGLICEMIA
+        if (Integer.parseInt(h.getSugarlevel())< Integer.parseInt(s.getMinglyc())) {
+            isAlert=true;
+        }
+
+        return isAlert;
+    }
+
 
     private double rdHearthRate(Strap s) {
          float min = Float.parseFloat(s.getMinvalueref());
@@ -118,4 +185,4 @@ public class PersonThreads implements Runnable{
     }
 
 }
-//Synchronize
+
