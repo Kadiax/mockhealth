@@ -17,22 +17,30 @@ import java.util.Random;
 public class PersonThreads implements Runnable{
     private Person p;
 
-    private HealthHistoricDAO healthHistoricDAO;
+    private static HealthHistoricDAO healthHistoricDAO;
     private List<HealthHistoric> historics;
     private StrapDAO strapDAO;
     private  ResidenceDAO residenceDAO;
     private Random rd;
     private static Residence residence;
+    private static boolean changeThreads=true;
 
 
-    public PersonThreads(Person p, HealthHistoricDAO healthHistoricDAO, StrapDAO strapDAO, ResidenceDAO residenceDAO){
+
+    public PersonThreads(Person p, StrapDAO strapDAO, ResidenceDAO residenceDAO){
         this.p=p;
-        this.healthHistoricDAO = healthHistoricDAO;
+
         historics = new ArrayList<>();
         this.strapDAO = strapDAO;
         this.residenceDAO = residenceDAO;
     }
+    public static HealthHistoricDAO getHealthHistoricDAO() {
+        return healthHistoricDAO;
+    }
 
+    public static void setHealthHistoricDAO(HealthHistoricDAO healthHistoricDAO) {
+        PersonThreads.healthHistoricDAO = healthHistoricDAO;
+    }
 
     @Override
     public void run() {
@@ -57,22 +65,31 @@ public class PersonThreads implements Runnable{
             else{
                 hearthrate-=2; systolic-=5; diastolic-=2; sugarLevel-=0.1; stepcounter=stepcounter+2;
             }
-            i++;
 
             HealthHistoric h = new HealthHistoric(String.valueOf(hearthrate),String.valueOf(systolic), String.valueOf(diastolic), String.valueOf(sugarLevel), String.valueOf(stepcounter), new Timestamp(new Date().getTime()), p.getStrap().getId() );
-            //healthHistoricDAO.saveAndFlush(h);
 
-            System.out.println(healthHistoricDAO.saveAndFlush(h));
+            //synchronized (healthHistoricDAO) {
+                System.out.println(healthHistoricDAO.saveAndFlush(h));
 
-            //wait
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                //wait
+                try {
+                    Thread.currentThread().sleep(1000);
+                    //while(changeThreads) {
+                        //changeThreads=false;
+                       // healthHistoricDAO.wait();
+                   // }
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                //changeThreads=true;
+                //healthHistoricDAO.notifyAll();
+            i++;
             }
+
         }
 
-    }
+    //}
 
     private double rdHearthRate(Strap s) {
          float min = Float.parseFloat(s.getMinvalueref());

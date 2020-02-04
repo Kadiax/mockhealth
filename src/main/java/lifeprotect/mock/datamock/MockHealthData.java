@@ -36,8 +36,8 @@ public class MockHealthData {
     public void generatePersonsThreads()  {
         //PersonThreads.setResidence(residence);
         for (Person p : residence.getPeople()){
-            PersonThreads pth = new PersonThreads(p, healthHistoricDAO, strapDAO, residenceDAO);
-            //PersonThreads.setResidence(residence);
+            PersonThreads pth = new PersonThreads(p, strapDAO, residenceDAO);
+            PersonThreads.setHealthHistoricDAO(healthHistoricDAO);
             personThreads.add(pth);
         }
     }
