@@ -1,9 +1,6 @@
 package lifeprotect.mock.datamock;
 
-import lifeprotect.mock.dao.HealthHistoricDAO;
-import lifeprotect.mock.dao.PersonDAO;
-import lifeprotect.mock.dao.ResidenceDAO;
-import lifeprotect.mock.dao.StrapDAO;
+import lifeprotect.mock.dao.*;
 import lifeprotect.mock.model.Person;
 import lifeprotect.mock.model.Residence;
 
@@ -18,14 +15,17 @@ public class MockHealthData {
     private StrapDAO strapDAO;
     private ResidenceDAO residenceDAO;
     private PersonDAO personDAO;
+    private AlertDAO alertDAO;
 
-    public MockHealthData(Residence residence, HealthHistoricDAO healthHistoricDAO, StrapDAO strapDAO, ResidenceDAO residenceDAO, PersonDAO pdao)  {
+
+    public MockHealthData(Residence residence, HealthHistoricDAO healthHistoricDAO, StrapDAO strapDAO, ResidenceDAO residenceDAO, PersonDAO pdao, AlertDAO alertDAO)  {
         this.residence = residence;
         personThreads = new ArrayList<>();
         this.strapDAO = strapDAO;
         this.healthHistoricDAO = healthHistoricDAO;
         this.residenceDAO = residenceDAO;
         this.personDAO = pdao;
+        this.alertDAO=alertDAO;
 
         //Start simulation
         generatePersonsThreads();
@@ -36,7 +36,7 @@ public class MockHealthData {
     public void generatePersonsThreads()  {
         //PersonThreads.setResidence(residence);
         for (Person p : residence.getPeople()){
-            PersonThreads pth = new PersonThreads(p, strapDAO, residenceDAO);
+            PersonThreads pth = new PersonThreads(p, strapDAO, residenceDAO, alertDAO);
             PersonThreads.setHealthHistoricDAO(healthHistoricDAO);
             personThreads.add(pth);
         }

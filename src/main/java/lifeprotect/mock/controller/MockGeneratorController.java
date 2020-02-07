@@ -34,9 +34,10 @@ public class MockGeneratorController {
     //DIABETIC
     private final static double MIN_GLYC = 0.45;
     private final static double MAX_GLYC = 1.26;
+    private AlertDAO alertDAO;
 
 
-    public MockGeneratorController(MockForm mf, PersonDAO pdao, ResidenceDAO rDAO, StrapDAO strapDAO, HealthHistoricDAO healthHistoricDAO){
+    public MockGeneratorController(MockForm mf, PersonDAO pdao, ResidenceDAO rDAO, StrapDAO strapDAO, HealthHistoricDAO healthHistoricDAO, AlertDAO alertDAO){
        this.mf = mf;
        //openning of csv file and creation of persons
         mockDAO = new MockResidentDAO(this.mf);
@@ -46,6 +47,7 @@ public class MockGeneratorController {
         this.healthHistoricDAO = healthHistoricDAO;
         persons= new ArrayList<Person>();
         this.pdao=pdao;
+        this.alertDAO= alertDAO;
     }
 
     public void  getPersonsMockFromOpenData(){
@@ -107,7 +109,7 @@ public class MockGeneratorController {
 
             //calcul of max threshold for heartRate (FC max = 207 – 0,7 x age)
             double fcMax = 207-0.7*ageCalculator(persons.get(i));
-            s.setMaxvalueref(String.valueOf(fcMax));
+            s.setMaxvalueref(String.valueOf((int)fcMax));
 
             //BLOOD PRESSURE
             //LOW BLOOD PRESSURE: min systolic 90 mmHg
@@ -141,11 +143,8 @@ public class MockGeneratorController {
     }
 
     private void generateMockData() {
-
-            mckd =new MockHealthData(residenceSaved, healthHistoricDAO, strapDAO, residenceDAO, pdao);
-
+        mckd =new MockHealthData(residenceSaved, healthHistoricDAO, strapDAO, residenceDAO, pdao, alertDAO);
     }
-
 
     public int ageCalculator(Person p){
         String[] tabGetDate = p.getBirthdate().split(" ");
@@ -171,16 +170,10 @@ public class MockGeneratorController {
         try {
             //delete historics
             healthHistoricDAO.deleteAll();
-
             //delete straps-persons-residence
             strapDAO.deleteAll();
-
-
-            //delete persons
-            //personDAO.deleteAll();
-
-            //delete residence
-            //residenceDAO.deleteAll();
+            //delete
+            alertDAO.deleteAll();
             return true;
         }catch (Exception ex){
             System.err.println("Error drop data: "+ex.getMessage());

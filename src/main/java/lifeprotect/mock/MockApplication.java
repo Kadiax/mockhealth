@@ -1,10 +1,7 @@
 package lifeprotect.mock;
 
 import lifeprotect.mock.controller.MockGeneratorController;
-import lifeprotect.mock.dao.HealthHistoricDAO;
-import lifeprotect.mock.dao.PersonDAO;
-import lifeprotect.mock.dao.ResidenceDAO;
-import lifeprotect.mock.dao.StrapDAO;
+import lifeprotect.mock.dao.*;
 import lifeprotect.mock.forms.MockForm;
 import org.springframework.boot.Banner;
 import org.springframework.boot.CommandLineRunner;
@@ -23,13 +20,15 @@ public class MockApplication  implements CommandLineRunner {
     private ResidenceDAO residenceDAO;
     private StrapDAO strapDAO;
     private HealthHistoricDAO healthHistoricDAO;
+    private AlertDAO alertDAO;
 
-    public MockApplication(PersonDAO pdao, ResidenceDAO rDAO, StrapDAO strapDAO, HealthHistoricDAO healthHistoricDAO){
+    public MockApplication(PersonDAO pdao, ResidenceDAO rDAO, StrapDAO strapDAO, HealthHistoricDAO healthHistoricDAO, AlertDAO alertDAO){
         scanner = new Scanner(System.in);
         this.pdao = pdao;
         residenceDAO = rDAO;
         this.strapDAO = strapDAO;
         this.healthHistoricDAO = healthHistoricDAO;
+        this.alertDAO = alertDAO;
     }
 
     @Override
@@ -129,7 +128,7 @@ public class MockApplication  implements CommandLineRunner {
         }catch (Exception e){System.out.println("Invalid character: "+e.getMessage());}
 
         //generate resident mock
-        mgc = new MockGeneratorController(mf, pdao, residenceDAO, strapDAO, healthHistoricDAO);
+        mgc = new MockGeneratorController(mf, pdao, residenceDAO, strapDAO, healthHistoricDAO, alertDAO);
         mgc.getPersonsMockFromOpenData();
     }
 

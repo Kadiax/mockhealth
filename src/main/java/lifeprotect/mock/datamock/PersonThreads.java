@@ -1,14 +1,14 @@
 package lifeprotect.mock.datamock;
 
+import lifeprotect.mock.dao.AlertDAO;
 import lifeprotect.mock.dao.HealthHistoricDAO;
 import lifeprotect.mock.dao.ResidenceDAO;
 import lifeprotect.mock.dao.StrapDAO;
-import lifeprotect.mock.model.HealthHistoric;
-import lifeprotect.mock.model.Person;
-import lifeprotect.mock.model.Residence;
-import lifeprotect.mock.model.Strap;
+import lifeprotect.mock.model.*;
 
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,15 +24,23 @@ public class PersonThreads implements Runnable{
     private Random rd;
     private static Residence residence;
     private static boolean changeThreads=true;
+    private AlertDAO alertDAO;
+    private  DecimalFormat df;
 
-
-
-    public PersonThreads(Person p, StrapDAO strapDAO, ResidenceDAO residenceDAO){
+    public PersonThreads(Person p, StrapDAO strapDAO, ResidenceDAO residenceDAO, AlertDAO alertDAO){
         this.p=p;
 
         historics = new ArrayList<>();
         this.strapDAO = strapDAO;
         this.residenceDAO = residenceDAO;
+        this.alertDAO = alertDAO;
+        rd = new Random();
+        //arrondir
+        df = new DecimalFormat() ;
+        df.setMaximumFractionDigits(2);
+        DecimalFormatSymbols ds = new DecimalFormatSymbols();
+        ds.setDecimalSeparator('.');
+        df.setDecimalFormatSymbols(ds);
     }
     public static HealthHistoricDAO getHealthHistoricDAO() {
         return healthHistoricDAO;
@@ -49,8 +57,8 @@ public class PersonThreads implements Runnable{
 
     private void generateHistoric() {
         int i = 0;
-        rd = new Random();
 
+        //health variables
         double hearthrate=rdHearthRate(p.getStrap());
         int systolic=rdSysto(p.getStrap()), diastolic=rdDiasto(p.getStrap()) ,stepcounter=0;
         double sugarLevel= rdSugarLevel(p.getStrap());
@@ -75,85 +83,91 @@ public class PersonThreads implements Runnable{
                     int alertchoice = rd.nextInt(maxi + 1 - mini) + mini;
                     //increment
                     if (alertchoice == 1) {
-                        hearthrate += 20;
-                        systolic += 20;
+                        hearthrate += 10;
+                        systolic += 10;
                         diastolic += 10;
-                        sugarLevel += 0.6;
-                        stepcounter = stepcounter - 0;
+                        sugarLevel += 0.3;
                     } else {//decrement
-                        hearthrate -= 20;
-                        systolic -= 20;
-                        diastolic -= 10;
-                        sugarLevel -= 0.6;
-                        stepcounter = stepcounter - 0;
+                        hearthrate -= 3;
+                        systolic -= 5;
+                        diastolic -= 5;
+                        sugarLevel -= 0.2;
                     }
-                    HealthHistoric h = new HealthHistoric(String.valueOf(hearthrate), String.valueOf(systolic), String.valueOf(diastolic), String.valueOf(sugarLevel), String.valueOf(stepcounter), new Timestamp(new Date().getTime()), p.getStrap().getId());
+                    HealthHistoric h = createHistoric(hearthrate, systolic, diastolic, sugarLevel, stepcounter);
                     System.err.println(healthHistoricDAO.saveAndFlush(h));
-
-                    //TODO isAlert
                     if (isAlert(h)) {
                         alert = true;
                     }
                 }
-                break;
             }
 
-            HealthHistoric h = new HealthHistoric(String.valueOf(hearthrate),String.valueOf(systolic), String.valueOf(diastolic), String.valueOf(sugarLevel), String.valueOf(stepcounter), new Timestamp(new Date().getTime()), p.getStrap().getId() );
+            HealthHistoric h = createHistoric(hearthrate, systolic, diastolic, sugarLevel, stepcounter);
 
-            //synchronized (healthHistoricDAO) {
                 System.out.println(healthHistoricDAO.saveAndFlush(h));
 
                 //wait
                 try {
                     Thread.currentThread().sleep(1000);
-                    //while(changeThreads) {
-                        //changeThreads=false;
-                       // healthHistoricDAO.wait();
-                   // }
-
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                //changeThreads=true;
-                //healthHistoricDAO.notifyAll();
             i++;
             }
 
         }
 
+    private HealthHistoric createHistoric(double hearthrate, int systolic, int diastolic, double sugarLevel, int stepcounter) {
+        return new HealthHistoric(String.valueOf(Math.abs((int)hearthrate)),
+                String.valueOf(Math.abs(systolic)),
+                String.valueOf(Math.abs(diastolic)),
+                String.valueOf(df.format(Math.abs(sugarLevel))),
+                String.valueOf(Math.abs(stepcounter)),
+                new Timestamp(new Date().getTime()),
+                p.getStrap().getId() );
+    }
+
     private boolean isAlert(HealthHistoric h) {
         Strap s = p.getStrap();
         boolean isAlert = false;
+        String message = "";
         //test //HIGH HEARTH RATE
-        if (Integer.parseInt(h.getHearthrate())>Integer.parseInt(s.getMaxvalueref())){
-            //TODO AlertDAO
+        if (Float.parseFloat(h.getHearthrate())>Float.parseFloat(s.getMaxvalueref())){
             isAlert=true;
+            message+="HIGH HEARTH RATE : "+h.getHearthrate()+" bpm > "+s.getMaxvalueref()+" bpm";
         }
         //test //LOW HEARTH RATE
-        if (Integer.parseInt(h.getHearthrate())< Integer.parseInt(s.getMinvalueref())){
+        if (Float.parseFloat(h.getHearthrate())< Float.parseFloat(s.getMinvalueref())){
             isAlert=true;
+            message+="---LOW HEARTH RATE : "+h.getHearthrate()+" bpm < "+s.getMinvalueref()+" bpm";
         }
         //test LOW BLOOD PRESSURE
         if (Integer.parseInt(h.getSystolic())< Integer.parseInt(s.getMinsysto())){
             isAlert=true;
+            message+="----LOW BLOOD PRESSURE : "+h.getSystolic()+"/"+h.getDiastolic()+" mmHg < "+s.getMinsysto()+"/"+s.getMaxdiasto()+" mmHg";
         }
 
         //test HIGH BLOOD PRESSURE
         if (Integer.parseInt(h.getSystolic())>Integer.parseInt(s.getMaxsysto()) &&
                 Integer.parseInt(h.getDiastolic())>Integer.parseInt(s.getMaxdiasto())){
             isAlert=true;
+            message+="----HIGH BLOOD PRESSURE : "+h.getSystolic()+"/"+h.getDiastolic()+" mmHg > "+s.getMaxsysto()+"/"+s.getMaxdiasto()+" mmHg";;
         }
 
         //test DIABETIC
         //HYPERGLYCEMIA
-        if (Integer.parseInt(h.getSugarlevel())>Integer.parseInt(s.getMaxglyc())) {
+        if (Float.parseFloat(h.getSugarlevel())>Float.parseFloat(s.getMaxglyc())) {
             isAlert=true;
+            message+="----HYPERGLYCEMIA : "+h.getSugarlevel()+" g/l > "+s.getMaxglyc()+" g/l";
         }
-        //HYPOGLICEMIA
-        if (Integer.parseInt(h.getSugarlevel())< Integer.parseInt(s.getMinglyc())) {
+        //HYPOGLYCEMIA
+        if (Float.parseFloat(h.getSugarlevel())< Float.parseFloat(s.getMinglyc())) {
             isAlert=true;
+            message+="----HYPOGLYCEMIA : "+h.getSugarlevel()+" g/l < "+s.getMinglyc()+" g/l";
         }
-
+        if (isAlert) {
+            Alert a = new Alert(message, new Timestamp(new Date().getTime()), s.getId());
+            alertDAO.saveAndFlush(a);
+        }
         return isAlert;
     }
 
