@@ -130,19 +130,24 @@ public class PersonThreads implements Runnable{
         Strap s = p.getStrap();
         boolean isAlert = false;
         String message = "";
+        int criticity = 0;
+
         //test //HIGH HEARTH RATE
         if (Float.parseFloat(h.getHearthrate())>Float.parseFloat(s.getMaxvalueref())){
             isAlert=true;
+            criticity++;
             message+="HIGH HEARTH RATE : "+h.getHearthrate()+" bpm > "+s.getMaxvalueref()+" bpm";
         }
         //test //LOW HEARTH RATE
         if (Float.parseFloat(h.getHearthrate())< Float.parseFloat(s.getMinvalueref())){
             isAlert=true;
+            criticity++;
             message+="---LOW HEARTH RATE : "+h.getHearthrate()+" bpm < "+s.getMinvalueref()+" bpm";
         }
         //test LOW BLOOD PRESSURE
         if (Integer.parseInt(h.getSystolic())< Integer.parseInt(s.getMinsysto())){
             isAlert=true;
+            criticity++;
             message+="----LOW BLOOD PRESSURE : "+h.getSystolic()+"/"+h.getDiastolic()+" mmHg < "+s.getMinsysto()+"/"+s.getMaxdiasto()+" mmHg";
         }
 
@@ -150,6 +155,7 @@ public class PersonThreads implements Runnable{
         if (Integer.parseInt(h.getSystolic())>Integer.parseInt(s.getMaxsysto()) &&
                 Integer.parseInt(h.getDiastolic())>Integer.parseInt(s.getMaxdiasto())){
             isAlert=true;
+            criticity++;
             message+="----HIGH BLOOD PRESSURE : "+h.getSystolic()+"/"+h.getDiastolic()+" mmHg > "+s.getMaxsysto()+"/"+s.getMaxdiasto()+" mmHg";;
         }
 
@@ -157,15 +163,19 @@ public class PersonThreads implements Runnable{
         //HYPERGLYCEMIA
         if (Float.parseFloat(h.getSugarlevel())>Float.parseFloat(s.getMaxglyc())) {
             isAlert=true;
+            criticity++;
             message+="----HYPERGLYCEMIA : "+h.getSugarlevel()+" g/l > "+s.getMaxglyc()+" g/l";
         }
         //HYPOGLYCEMIA
         if (Float.parseFloat(h.getSugarlevel())< Float.parseFloat(s.getMinglyc())) {
             isAlert=true;
+            criticity++;
             message+="----HYPOGLYCEMIA : "+h.getSugarlevel()+" g/l < "+s.getMinglyc()+" g/l";
         }
+
+
         if (isAlert) {
-            Alert a = new Alert(message, new Timestamp(new Date().getTime()), s.getId());
+            Alert a = new Alert(message, new Timestamp(new Date().getTime()), String.valueOf(criticity), s.getId());
             alertDAO.saveAndFlush(a);
         }
         return isAlert;

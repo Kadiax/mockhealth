@@ -12,12 +12,16 @@ public class Alert extends PersistableElement{
     @Column(name="startdate")
     private Timestamp startdate;
 
+    @Column(name="criticity")
+    private String criticity;
+
     @Column(name="strapId")
     private Long strapId;
 
-    public Alert (String message, Timestamp startdate, Long strap) {
+    public Alert (String message, Timestamp startdate, String criticity, Long strap) {
         this.message = message;
         this.startdate = startdate;
+        this.criticity = criticity;
         this.strapId = strap;
     }
 
@@ -45,5 +49,13 @@ public class Alert extends PersistableElement{
 
     public void setStrapId(Long strapId) {
         this.strapId = strapId;
+    }
+
+    public String getCriticity() {
+        return criticity;
+    }
+
+    public void setCriticity(String criticity) {
+        this.criticity = criticity;
     }
 }
