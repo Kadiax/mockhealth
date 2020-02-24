@@ -20,9 +20,9 @@ public class MockApplication  implements CommandLineRunner {
     private ResidenceDAO residenceDAO;
     private StrapDAO strapDAO;
     private HealthHistoricDAO healthHistoricDAO;
-    private AlertDAO alertDAO;
+    private AlertHealthDAO alertDAO;
 
-    public MockApplication(PersonDAO pdao, ResidenceDAO rDAO, StrapDAO strapDAO, HealthHistoricDAO healthHistoricDAO, AlertDAO alertDAO){
+    public MockApplication(PersonDAO pdao, ResidenceDAO rDAO, StrapDAO strapDAO, HealthHistoricDAO healthHistoricDAO, AlertHealthDAO alertDAO){
         scanner = new Scanner(System.in);
         this.pdao = pdao;
         residenceDAO = rDAO;
@@ -61,6 +61,9 @@ public class MockApplication  implements CommandLineRunner {
                     break;
             }
         }
+
+        /*MockService gwc = new MockService();
+        System.out.println(""+gwc.sendMessage());*/
     }
 
     //Form to mock resident
@@ -78,6 +81,30 @@ public class MockApplication  implements CommandLineRunner {
                 throw new Exception();
             }else{
                 mf.setNbresident(nbr);
+            }
+
+            //Doctor number
+            System.out.println("How many doctor ? ");
+
+            nbr = Integer.parseInt(scanner.nextLine());
+
+            if(nbr>150){
+                System.err.println("Error number of resident must be lower than 100.");
+                throw new Exception();
+            }else{
+                mf.setNbDoctors(nbr);
+            }
+
+            //Agent number
+            System.out.println("How many agent ? ");
+
+            nbr = Integer.parseInt(scanner.nextLine());
+
+            if(nbr>150){
+                System.err.println("Error number of resident must be lower than 150.");
+                throw new Exception();
+            }else{
+                mf.setNbAgents(nbr);
             }
 
             //bloodPressure Number

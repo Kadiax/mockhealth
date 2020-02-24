@@ -4,7 +4,6 @@ import lifeprotect.mock.dao.*;
 import lifeprotect.mock.model.Person;
 import lifeprotect.mock.model.Residence;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,10 +14,10 @@ public class MockHealthData {
     private StrapDAO strapDAO;
     private ResidenceDAO residenceDAO;
     private PersonDAO personDAO;
-    private AlertDAO alertDAO;
+    private AlertHealthDAO alertDAO;
 
 
-    public MockHealthData(Residence residence, HealthHistoricDAO healthHistoricDAO, StrapDAO strapDAO, ResidenceDAO residenceDAO, PersonDAO pdao, AlertDAO alertDAO)  {
+    public MockHealthData(Residence residence, HealthHistoricDAO healthHistoricDAO, StrapDAO strapDAO, ResidenceDAO residenceDAO, PersonDAO pdao, AlertHealthDAO alertDAO)  {
         this.residence = residence;
         personThreads = new ArrayList<>();
         this.strapDAO = strapDAO;
@@ -29,7 +28,7 @@ public class MockHealthData {
 
         //Start simulation
         generatePersonsThreads();
-        startMockHealthData();
+       // startMockHealthData();
 
     }
 

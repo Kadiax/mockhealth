@@ -1,6 +1,6 @@
 package lifeprotect.mock.datamock;
 
-import lifeprotect.mock.dao.AlertDAO;
+import lifeprotect.mock.dao.AlertHealthDAO;
 import lifeprotect.mock.dao.HealthHistoricDAO;
 import lifeprotect.mock.dao.ResidenceDAO;
 import lifeprotect.mock.dao.StrapDAO;
@@ -24,10 +24,15 @@ public class PersonThreads implements Runnable{
     private Random rd;
     private static Residence residence;
     private static boolean changeThreads=true;
-    private AlertDAO alertDAO;
+    private AlertHealthDAO alertDAO;
     private  DecimalFormat df;
+    private static long HEARTHRATE_INTERVALLE =1000;
+    private static long BLOODPRESSURE_INTERVALLE=2000;
+    private static long DIABETIC_INTERVALLE=5000;
+    private static long STEPS_INTERVALLE =5000;
 
-    public PersonThreads(Person p, StrapDAO strapDAO, ResidenceDAO residenceDAO, AlertDAO alertDAO){
+
+    public PersonThreads(Person p, StrapDAO strapDAO, ResidenceDAO residenceDAO, AlertHealthDAO alertDAO){
         this.p=p;
 
         historics = new ArrayList<>();
@@ -76,27 +81,29 @@ public class PersonThreads implements Runnable{
                 hearthrate-=2; systolic-=5; diastolic-=2; sugarLevel-=0.1; stepcounter=stepcounter+2;
             }//create alerts
             else{
-                //while alert variable is false we stay in the alert generator
-                boolean alert=false;
-                while(!alert) {
-                    int mini = 1, maxi = 2;
-                    int alertchoice = rd.nextInt(maxi + 1 - mini) + mini;
-                    //increment
-                    if (alertchoice == 1) {
-                        hearthrate += 10;
-                        systolic += 10;
-                        diastolic += 10;
-                        sugarLevel += 0.3;
-                    } else {//decrement
-                        hearthrate -= 3;
-                        systolic -= 5;
-                        diastolic -= 5;
-                        sugarLevel -= 0.2;
-                    }
-                    HealthHistoric h = createHistoric(hearthrate, systolic, diastolic, sugarLevel, stepcounter);
-                    System.err.println(healthHistoricDAO.saveAndFlush(h));
-                    if (isAlert(h)) {
-                        alert = true;
+                if(p.getDeseas().length()>0){//if the resident is not sick we don't create alerts
+                    //while alert variable is false we stay in the alert generator
+                    boolean alert=false;
+                    while(!alert) {
+                        int mini = 1, maxi = 2;
+                        int alertchoice = rd.nextInt(maxi + 1 - mini) + mini;
+                        //increment
+                        if (alertchoice == 1) {
+                            hearthrate += 10;
+                            systolic += 10;
+                            diastolic += 10;
+                            sugarLevel += 0.3;
+                        } else {//decrement
+                            hearthrate -= 3;
+                            systolic -= 5;
+                            diastolic -= 5;
+                            sugarLevel -= 0.2;
+                        }
+                        HealthHistoric h = createHistoric(hearthrate, systolic, diastolic, sugarLevel, stepcounter);
+                        System.err.println(healthHistoricDAO.saveAndFlush(h));
+                        if (isAlert(h)) {
+                            alert = true;
+                        }
                     }
                 }
             }
@@ -175,7 +182,7 @@ public class PersonThreads implements Runnable{
 
 
         if (isAlert) {
-            Alert a = new Alert(message, new Timestamp(new Date().getTime()), String.valueOf(criticity), s.getId());
+            AlertHealth a = new AlertHealth(message, new Timestamp(new Date().getTime()), String.valueOf(criticity), s.getId());
             alertDAO.saveAndFlush(a);
         }
         return isAlert;
@@ -207,6 +214,8 @@ public class PersonThreads implements Runnable{
         float max= Float.parseFloat(s.getMaxglyc());
         return   min + Math.random() * (max - min);
     }
+
+    //private Thread HearthRate = new Thread()
 
 }
 

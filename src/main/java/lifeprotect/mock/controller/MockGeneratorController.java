@@ -34,10 +34,10 @@ public class MockGeneratorController {
     //DIABETIC
     private final static double MIN_GLYC = 0.45;
     private final static double MAX_GLYC = 1.26;
-    private AlertDAO alertDAO;
+    private AlertHealthDAO alertDAO;
 
 
-    public MockGeneratorController(MockForm mf, PersonDAO pdao, ResidenceDAO rDAO, StrapDAO strapDAO, HealthHistoricDAO healthHistoricDAO, AlertDAO alertDAO){
+    public MockGeneratorController(MockForm mf, PersonDAO pdao, ResidenceDAO rDAO, StrapDAO strapDAO, HealthHistoricDAO healthHistoricDAO, AlertHealthDAO alertDAO){
        this.mf = mf;
        //openning of csv file and creation of persons
         mockDAO = new MockResidentDAO(this.mf);
@@ -65,15 +65,29 @@ public class MockGeneratorController {
                 residenceSaved = residenceDAO.saveAndFlush(residence);
             }
 
-        //insert persons into residence
+        //insert residents into residence
         for (Person p : personsMock) {
             residenceSaved.addPerson(p);
-            residenceSaved = residenceDAO.saveAndFlush(residenceSaved);
         }
+
+        //Create Doctors
+        for (int i =0; i< mf.getNbDoctors(); i++){
+            Person p = new Person("Doctor"+1, "Doctor"+1, "1966-07-15", "doctor"+i+"@doctor.com", "0659594533", "null", "null", "doctor"+i, "admin", "null", "null", Long.parseLong("0"), PersonStatus.DOCTOR);
+            residenceSaved.addPerson(p);
+        }
+
+        //Create Agents
+        for (int i =0; i< mf.getNbAgents(); i++){
+             Person p = new Person("Agent"+i, "Agent"+i, "1966-07-15", "agent"+i+"@agent.com", "0659594533", "null", "null", "agent"+i, "admin", "null", "null", Long.parseLong("0"), PersonStatus.AGENT);
+             residenceSaved.addPerson(p);
+        }
+
+        //SavePerson
+        residenceSaved = residenceDAO.saveAndFlush(residenceSaved);
 
         persons = residenceSaved.getPeople();
 
-        //Display persons
+            //Display persons
             for (Person p : persons) {
                 System.out.println(p);
             }

@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 import java.sql.Timestamp;
 
 @Entity(name="alert")
-public class Alert extends PersistableElement{
+public class AlertHealth extends PersistableElement{
     @Column(name="message")
     private String message;
 
@@ -18,14 +18,14 @@ public class Alert extends PersistableElement{
     @Column(name="strapId")
     private Long strapId;
 
-    public Alert (String message, Timestamp startdate, String criticity, Long strap) {
+    public AlertHealth(String message, Timestamp startdate, String criticity, Long strap) {
         this.message = message;
         this.startdate = startdate;
         this.criticity = criticity;
         this.strapId = strap;
     }
 
-    public Alert(){}
+    public AlertHealth(){}
 
     public String getMessage() {
         return message;
