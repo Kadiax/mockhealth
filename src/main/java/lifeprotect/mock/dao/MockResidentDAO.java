@@ -77,6 +77,7 @@ public class MockResidentDAO {
             String minsteps= oneData[8];
             String minglyc= oneData[9];
             String maxglyc = oneData[10];
+            String strapid = oneData[11];
 
            Person p = new Person();
            p.setId(Long.parseLong(id));
@@ -91,6 +92,7 @@ public class MockResidentDAO {
            s.setMinglyc(minglyc);
            s.setMaxglyc(maxglyc);
            s.setMinsteps(minsteps);
+           s.setId(Long.parseLong(strapid));
            p.setStrap(s);
 
 

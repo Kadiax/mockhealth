@@ -1,2 +1,2 @@
-#id,firstName,lastName,minvalueref,maxvalueref,minsysto,maxsysto,maxdiasto,minsteps,minglyc,maxglyc
-1,Amanda,Willson,50,180,120,140,90,7000,0.45,1,26
+#id,firstName,lastName,minvalueref,maxvalueref,minsysto,maxsysto,maxdiasto,minsteps,minglyc,maxglyc,strapid
+1,Amanda,Willson,50,180,120,140,90,7000,0.45,1.26,2

@@ -87,7 +87,7 @@ public class PersonThreads implements Runnable{
 
             HealthHistoric h = createHistoric(hearthrate, systolic, diastolic, sugarLevel, stepcounter);
 
-            System.out.println(service.sendMessage(h.toMessage()));
+            System.out.println(h.toMessage()+": server "+service.sendMessage(h.toMessage()));
 
             //wait
             try {
