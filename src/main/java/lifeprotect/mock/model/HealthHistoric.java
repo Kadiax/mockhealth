@@ -109,4 +109,13 @@ public class HealthHistoric extends PersistableElement{
                 ", startdate=" + startdate +
                 '}';
     }
+
+    public String toMessage(){
+        return "hearthrate='" + hearthrate + '\'' +
+                ", systolic='" + systolic + '\'' +
+                ", diastolic='" + diastolic + '\'' +
+                ", sugarlevel='" + sugarlevel + '\'' +
+                ", stepcounter='" + stepcounter + '\'' +
+                ", startdate=" + startdate;
+    }
 }

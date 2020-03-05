@@ -1,44 +1,28 @@
 package lifeprotect.mock.datamock;
 
-import lifeprotect.mock.dao.AlertHealthDAO;
-import lifeprotect.mock.dao.HealthHistoricDAO;
-import lifeprotect.mock.dao.ResidenceDAO;
-import lifeprotect.mock.dao.StrapDAO;
 import lifeprotect.mock.model.*;
+import lifeprotect.mock.services.MockService;
 
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
 
 public class PersonThreads implements Runnable{
     private Person p;
-
-    private static HealthHistoricDAO healthHistoricDAO;
-    private List<HealthHistoric> historics;
-    private StrapDAO strapDAO;
-    private  ResidenceDAO residenceDAO;
     private Random rd;
-    private static Residence residence;
-    private static boolean changeThreads=true;
-    private AlertHealthDAO alertDAO;
     private  DecimalFormat df;
+    private MockService service;
+
     private static long HEARTHRATE_INTERVALLE =1000;
     private static long BLOODPRESSURE_INTERVALLE=2000;
     private static long DIABETIC_INTERVALLE=5000;
     private static long STEPS_INTERVALLE =5000;
 
 
-    public PersonThreads(Person p, StrapDAO strapDAO, ResidenceDAO residenceDAO, AlertHealthDAO alertDAO){
+    public PersonThreads(Person p){
         this.p=p;
-
-        historics = new ArrayList<>();
-        this.strapDAO = strapDAO;
-        this.residenceDAO = residenceDAO;
-        this.alertDAO = alertDAO;
         rd = new Random();
         //arrondir
         df = new DecimalFormat() ;
@@ -46,23 +30,15 @@ public class PersonThreads implements Runnable{
         DecimalFormatSymbols ds = new DecimalFormatSymbols();
         ds.setDecimalSeparator('.');
         df.setDecimalFormatSymbols(ds);
-    }
-    public static HealthHistoricDAO getHealthHistoricDAO() {
-        return healthHistoricDAO;
+
+        this.service = new MockService();
     }
 
-    public static void setHealthHistoricDAO(HealthHistoricDAO healthHistoricDAO) {
-        PersonThreads.healthHistoricDAO = healthHistoricDAO;
-    }
 
     @Override
     public void run() {
-        generateHistoric();
-    }
-
-    private void generateHistoric() {
+        System.out.println("START :"+p.toString());
         int i = 0;
-
         //health variables
         double hearthrate=rdHearthRate(p.getStrap());
         int systolic=rdSysto(p.getStrap()), diastolic=rdDiasto(p.getStrap()) ,stepcounter=0;
@@ -79,9 +55,10 @@ public class PersonThreads implements Runnable{
             //decrement values
             else if(choice==2){
                 hearthrate-=2; systolic-=5; diastolic-=2; sugarLevel-=0.1; stepcounter=stepcounter+2;
-            }//create alerts
+            }
+            //create alerts
             else{
-                if(p.getDeseas().length()>0){//if the resident is not sick we don't create alerts
+                if(p.getDeseas()!=null){//if the resident is not sick we don't create alerts
                     //while alert variable is false we stay in the alert generator
                     boolean alert=false;
                     while(!alert) {
@@ -100,7 +77,7 @@ public class PersonThreads implements Runnable{
                             sugarLevel -= 0.2;
                         }
                         HealthHistoric h = createHistoric(hearthrate, systolic, diastolic, sugarLevel, stepcounter);
-                        System.err.println(healthHistoricDAO.saveAndFlush(h));
+                        //System.err.println(healthHistoricDAO.saveAndFlush(h));
                         if (isAlert(h)) {
                             alert = true;
                         }
@@ -110,18 +87,18 @@ public class PersonThreads implements Runnable{
 
             HealthHistoric h = createHistoric(hearthrate, systolic, diastolic, sugarLevel, stepcounter);
 
-                System.out.println(healthHistoricDAO.saveAndFlush(h));
+            System.out.println(service.sendMessage(h.toMessage()));
 
-                //wait
-                try {
-                    Thread.currentThread().sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            i++;
+            //wait
+            try {
+                Thread.currentThread().sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-
+            i++;
         }
+    }
+
 
     private HealthHistoric createHistoric(double hearthrate, int systolic, int diastolic, double sugarLevel, int stepcounter) {
         return new HealthHistoric(String.valueOf(Math.abs((int)hearthrate)),
@@ -183,11 +160,10 @@ public class PersonThreads implements Runnable{
 
         if (isAlert) {
             AlertHealth a = new AlertHealth(message, new Timestamp(new Date().getTime()), String.valueOf(criticity), s.getId());
-            alertDAO.saveAndFlush(a);
+           //alertDAO.saveAndFlush(a);
         }
         return isAlert;
     }
-
 
     private double rdHearthRate(Strap s) {
          float min = Float.parseFloat(s.getMinvalueref());

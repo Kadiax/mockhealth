@@ -1,13 +1,13 @@
 package lifeprotect.mock.dao;
 
 import com.opencsv.CSVReader;
-import lifeprotect.mock.forms.MockForm;
 import lifeprotect.mock.model.Diseas;
 import lifeprotect.mock.model.Person;
 import lifeprotect.mock.model.PersonStatus;
 
 import java.io.*;
 
+import lifeprotect.mock.model.Strap;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.ResourceUtils;
 
@@ -23,11 +23,7 @@ public class MockResidentDAO {
     private final static String FILE_NAME = "mock.csv";
     private final static char SEPARATOR = ',';
 
-    private MockForm mf;
-
-    public MockResidentDAO(MockForm mf){
-        this.mf = mf;
-    }
+    public MockResidentDAO(){}
 
     public List<Person> createPersons() throws IOException {
 
@@ -70,55 +66,35 @@ public class MockResidentDAO {
 
         DateFormat dateFormat = new SimpleDateFormat("mm/dd/yyyy");
         for (String[] oneData : data) {
-            String firstName = oneData[0];
-            String lastName = oneData[1];
-            String birthdate = oneData[2];
-            String email = oneData[3];
-            String phone = oneData[4];
-            String handicap = oneData[5];
-            String averageincome = oneData[6];
-            String login = oneData[7];
-            String password = oneData[8];
-            String deseas = oneData[9];
-            String ismobile = oneData[10];
-            //String userevaluation = oneData[11];
-            //String userRole = oneData[12];
-            Long userevaluation = null;
-            PersonStatus userRole = PersonStatus.RESIDENT;
+            String id = oneData[0];
+            String firstName = oneData[1];
+            String lastName = oneData[2];
+            String minvalueref = oneData[3];
+            String maxvalueref= oneData[4];
+            String minsysto= oneData[5];
+            String maxsysto= oneData[6];
+            String maxdiasto= oneData[7];
+            String minsteps= oneData[8];
+            String minglyc= oneData[9];
+            String maxglyc = oneData[10];
 
-           Person p = new Person(firstName, lastName, birthdate, email, phone, handicap, averageincome, login, password, deseas, ismobile, userevaluation, userRole);
-
-           //repect the number of bloodPressure
-            if (mf.getBloodPressurepPb()>0){
-                p.setDeseas(Diseas.BLOODPRESSURE.toString());
-                mf.setBloodPressurepPb(mf.getBloodPressurepPb()-1);
-            }
-
-            //repect the number of Diabetic Problem
-            if (mf.getDiabeticPb()>0){
-                p.setDeseas(p.getDeseas()+"-"+Diseas.DIABETIC.toString());
-                mf.setDiabeticPb(mf.getDiabeticPb()-1);
-            }
+           Person p = new Person();
+           p.setId(Long.parseLong(id));
+           p.setFirstName(firstName);
+           p.setLastName(lastName);
+           Strap s = new Strap();
+           s.setMinvalueref(minvalueref);
+           s.setMaxvalueref(maxvalueref);
+           s.setMinsysto(minsysto);
+           s.setMaxsysto(maxsysto);
+           s.setMaxdiasto(maxdiasto);
+           s.setMinglyc(minglyc);
+           s.setMaxglyc(maxglyc);
+           s.setMinsteps(minsteps);
+           p.setStrap(s);
 
 
-            //repect the number of Inactivity Problem
-            if (mf.getStepsPb()>0){
-                p.setDeseas(p.getDeseas()+"-"+Diseas.INACTIVITY.toString());
-                p.setIsmobile("true");
-                mf.setStepsPb(mf.getStepsPb()-1);
-            }
-
-            //repect the number of Athletic (the last person of the list)
-            if (mf.getNbAthletic()>0 && mf.getNbresident()>= mf.getNbAthletic()) {
-                p.setIsmobile("true");
-                mf.setNbAthletic(mf.getNbAthletic()-1);
-            }
-
-            persons.add(p);
-
-           //respect the number of resident
-           mf.setNbresident(mf.getNbresident()-1);
-           if (mf.getNbresident()==0) break;
+           persons.add(p);
         }
 
         return persons;

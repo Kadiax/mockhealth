@@ -1,15 +1,10 @@
 package lifeprotect.mock.services;
 
-import lifeprotect.mock.model.Person;
-import org.reactivestreams.Subscriber;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 @Service
 public class MockService {
@@ -25,32 +20,17 @@ public class MockService {
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, API_MIME_TYPE)
                 .defaultHeader(HttpHeaders.USER_AGENT, USER_AGENT)
                 .build();
-        /*webClient = WebClient.create("http://localhost:8080/api");
-        result = webClient.get()
-                .uri("/person/findAll")
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange();*/
     }
 
-    /*public String getResult() {
-        return ">> result = " +
-                result.flatMap(res -> res.bodyToMono(String.class)).block();
-    }*/
 
-    public Flux<Person> getAllPersons() {
+
+    public String sendMessage(String message) {
         return webClient.get()
-                .uri("/person/findAll")
+                .uri("/mockHealth/message/"+message)
                 .exchange()
-                .flatMapMany(clientResponse -> clientResponse.bodyToFlux(Person.class));
+                .flatMap(clientResponse -> clientResponse.bodyToMono(String.class)).block();
     }
 
-    public Mono<ClientResponse> sendMessage() {
-         return webClient.post()
-                .uri("mockHealth/message")
-                .accept(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue("HELLO WORLD"))
-                .exchange();
-    }
 
 
 }

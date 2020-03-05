@@ -1,27 +1,17 @@
 package lifeprotect.mock.controller;
 
 import lifeprotect.mock.dao.*;
-import lifeprotect.mock.datamock.MockHealthData;
-import lifeprotect.mock.forms.MockForm;
+import lifeprotect.mock.datamock.PersonThreads;
 import lifeprotect.mock.model.*;
 
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.*;
 
 public class MockGeneratorController {
     private MockResidentDAO mockDAO;
-    private PersonDAO personDAO;
-    private ResidenceDAO residenceDAO;
-
     private List<Person> persons;
-    private Residence residenceSaved= null;
-    private List<IOT> straps= new ArrayList<>();
-    private MockForm mf;
-    private StrapDAO strapDAO;
-    private MockHealthData mckd;
-    private HealthHistoricDAO healthHistoricDAO;
-    private PersonDAO pdao;
+    private List<PersonThreads> personThreads;
+
     //HEARTH RATE
     private final static int MIN_HEARTH_RATE = 50;
     private final static int MIN_HEARTH_RATE_FOR_ATHLETE = 30;
@@ -34,71 +24,29 @@ public class MockGeneratorController {
     //DIABETIC
     private final static double MIN_GLYC = 0.45;
     private final static double MAX_GLYC = 1.26;
-    private AlertHealthDAO alertDAO;
 
 
-    public MockGeneratorController(MockForm mf, PersonDAO pdao, ResidenceDAO rDAO, StrapDAO strapDAO, HealthHistoricDAO healthHistoricDAO, AlertHealthDAO alertDAO){
-       this.mf = mf;
-       //openning of csv file and creation of persons
-        mockDAO = new MockResidentDAO(this.mf);
-        personDAO = pdao;
-        residenceDAO = rDAO;
-        this.strapDAO = strapDAO;
-        this.healthHistoricDAO = healthHistoricDAO;
-        persons= new ArrayList<Person>();
-        this.pdao=pdao;
-        this.alertDAO= alertDAO;
+
+    public MockGeneratorController(){
+       //opening of csv file and creation of persons
+        mockDAO = new MockResidentDAO();
     }
 
     public void  getPersonsMockFromOpenData(){
         try {
             //Creation of persons from csv file
-            List<Person> personsMock = mockDAO.createPersons();
-
-         // create only one residence
-            if (residenceSaved==null) {
-                Residence residence = new Residence();
-                residence.setAdress("71 Rue Saint-Simon, 94000 Créteil");
-                residence.setCreationdate(new Timestamp(new Date().getTime()));
-                residence.setEmail("lifeprotect@gmail.com");
-                residence.setPhone("0889897387746");
-                residenceSaved = residenceDAO.saveAndFlush(residence);
-            }
-
-        //insert residents into residence
-        for (Person p : personsMock) {
-            residenceSaved.addPerson(p);
-        }
-
-        //Create Doctors
-        for (int i =0; i< mf.getNbDoctors(); i++){
-            Person p = new Person("Doctor"+1, "Doctor"+1, "1966-07-15", "doctor"+i+"@doctor.com", "0659594533", "null", "null", "doctor"+i, "admin", "null", "null", Long.parseLong("0"), PersonStatus.DOCTOR);
-            residenceSaved.addPerson(p);
-        }
-
-        //Create Agents
-        for (int i =0; i< mf.getNbAgents(); i++){
-             Person p = new Person("Agent"+i, "Agent"+i, "1966-07-15", "agent"+i+"@agent.com", "0659594533", "null", "null", "agent"+i, "admin", "null", "null", Long.parseLong("0"), PersonStatus.AGENT);
-             residenceSaved.addPerson(p);
-        }
-
-        //SavePerson
-        residenceSaved = residenceDAO.saveAndFlush(residenceSaved);
-
-        persons = residenceSaved.getPeople();
-
-            //Display persons
-            for (Person p : persons) {
-                System.out.println(p);
-            }
+            this.persons = mockDAO.createPersons();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         //Start simulation
-        generateStraps();
-        generateMockData();
+        for (Person p : persons){
+            PersonThreads pth = new PersonThreads(p);
+            //personThreads.add(pth);
+            pth.run();
+        }
     }
 
     //calcul of thresholds based on persons
@@ -137,27 +85,12 @@ public class MockGeneratorController {
             s.setMinglyc(""+MIN_GLYC);
             //hyperglycemia 1,26
             s.setMaxglyc(""+MAX_GLYC);
-
+            s.setStatus("ON");
             s.setPerson(persons.get(i));
 
             i++;
         }
 
-        //update persons
-        residenceSaved = residenceDAO.saveAndFlush(residenceSaved);
-        //update persons array
-        persons = residenceSaved.getPeople();
-
-        //Save straps into array
-        for (Person p : persons) {
-            IOT s = p.getStrap();
-            straps.add(s);
-            //System.out.println(straps);
-        }
-    }
-
-    private void generateMockData() {
-        mckd =new MockHealthData(residenceSaved, healthHistoricDAO, strapDAO, residenceDAO, pdao, alertDAO);
     }
 
     public int ageCalculator(Person p){
@@ -180,18 +113,4 @@ public class MockGeneratorController {
         return ip;
     }
 
-    public boolean dropMockData(){
-        try {
-            //delete historics
-            healthHistoricDAO.deleteAll();
-            //delete straps-persons-residence
-            strapDAO.deleteAll();
-            //delete
-            alertDAO.deleteAll();
-            return true;
-        }catch (Exception ex){
-            System.err.println("Error drop data: "+ex.getMessage());
-        }
-        return false;
-    }
 }
