@@ -44,7 +44,7 @@ public class PersonThreads implements Runnable{
         int systolic=rdSysto(p.getStrap()), diastolic=rdDiasto(p.getStrap()) ,stepcounter=0;
         double sugarLevel= rdSugarLevel(p.getStrap());
 
-        while(i<4){
+        while(i<15){
             /*3 Choices : 1)increment all values, 2)decrement values or lower the stepscounter, 3)generate alerts*/
             int min = 1, max=3;
             int choice = rd.nextInt(max + 1 - min) + min;

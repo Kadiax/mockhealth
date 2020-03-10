@@ -26,8 +26,7 @@ public class MockApplication  implements CommandLineRunner {
         mgc = new MockGeneratorController();
         mgc.getPersonsMockFromOpenData();
 
-       /* MockService mockInterface = new MockService();
-        System.out.println(""+mockInterface.sendMessage("Hello world !"));*/
+
     }
 
 
