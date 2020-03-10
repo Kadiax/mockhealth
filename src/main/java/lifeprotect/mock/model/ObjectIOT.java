@@ -4,19 +4,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import java.util.Date;
 
-@Entity(name = "objectiot")
 public class ObjectIOT extends PersistableElement {
-    @Column(name="name")
     private String name;
-    @Column(name="status")
     private String status;
-    @Column(name="date")
     private Date date;
-    @Column(name="minValue")
     private int minValue;
-    @Column(name="maxValue")
     private int maxValue;
-    @Column(name="actualValue")
     private int actualValue;
 
     public ObjectIOT(){}

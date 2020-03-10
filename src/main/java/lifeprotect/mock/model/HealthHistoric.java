@@ -2,28 +2,20 @@ package lifeprotect.mock.model;
 import javax.persistence.*;
 import java.sql.Timestamp;
 
-@Entity(name="healthhistoric")
 public class HealthHistoric extends PersistableElement{
 
-    @Column(name="hearthrate")
     private String hearthrate;
 
-    @Column(name="systolic")
     private String systolic;
 
-    @Column(name="diastolic")
     private String diastolic;
 
-    @Column(name="sugarlevel")
     private String sugarlevel;
 
-    @Column(name="stepcounter")
     private String stepcounter;
 
-    @Column(name="startdate")
     private Timestamp startdate;
 
-    @Column(name="strapId")
     private Long strapid;
 
     public HealthHistoric(String hearthrate, String systolic, String diastolic, String sugarlevel, String stepcounter, Timestamp startdate, Long strap) {

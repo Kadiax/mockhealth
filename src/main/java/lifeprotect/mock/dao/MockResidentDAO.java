@@ -72,12 +72,13 @@ public class MockResidentDAO {
             String minvalueref = oneData[3];
             String maxvalueref= oneData[4];
             String minsysto= oneData[5];
-            String maxsysto= oneData[6];
-            String maxdiasto= oneData[7];
-            String minsteps= oneData[8];
-            String minglyc= oneData[9];
-            String maxglyc = oneData[10];
-            String strapid = oneData[11];
+            String mindiasto= oneData[6];
+            String maxsysto= oneData[7];
+            String maxdiasto= oneData[8];
+            String minsteps= oneData[9];
+            String minglyc= oneData[10];
+            String maxglyc = oneData[11];
+            String strapid = oneData[12];
 
            Person p = new Person();
            p.setId(Long.parseLong(id));
@@ -88,6 +89,7 @@ public class MockResidentDAO {
            s.setMaxvalueref(maxvalueref);
            s.setMinsysto(minsysto);
            s.setMaxsysto(maxsysto);
+           s.setMindiasto(mindiasto);
            s.setMaxdiasto(maxdiasto);
            s.setMinglyc(minglyc);
            s.setMaxglyc(maxglyc);

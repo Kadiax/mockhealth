@@ -4,16 +4,12 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-@MappedSuperclass
 public abstract class PersistableElement implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(columnDefinition = "serial")
+
     private Long id;
 
-    @Version
-    @Column
+
     protected Timestamp optlock;
 
     public PersistableElement() {

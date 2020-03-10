@@ -3,52 +3,36 @@ package lifeprotect.mock.model;
 import javax.persistence.*;
 import java.util.List;
 
-@Entity(name = "person")
 public class Person extends PersistableElement{
 
-    @Column(name="firstname")
     private String firstName;
 
-    @Column(name="lastname")
     private String lastName;
 
-    @Column(name="birthdate")
     private String birthdate;
 
-    @Column(name="email")
     private String email;
 
-    @Column(name="phone")
     private String phone;
 
-    @Column(name="handicap")
     private String handicap;
 
-    @Column(name="averageincome")
     private String averageincome;
 
-    @Column(name="login")
     private String login;
 
-    @Column(name="password")
     private String password;
 
-    @Column(name="deseas")
     private String deseas;
 
-    @Column(name="ismobile")
     private String ismobile;
 
-    @Column(name="userevaluation")
     private Long userevaluation;
 
-    @Enumerated(EnumType.STRING)
     private PersonStatus userrole;
 
-    @ManyToOne(cascade = CascadeType.ALL)
     private Residence residence;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "person")
     private Strap strap;
 
     public Person(){}

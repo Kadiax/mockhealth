@@ -8,22 +8,16 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(name="residence")
 public class Residence extends PersistableElement {
 
-    @Column(name="adress")
     private String adress;
 
-    @Column(name="phone")
     private String phone;
 
-    @Column(name="email")
     private String email;
 
-    @Column(name="creationdate")
     private Timestamp creationdate;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "residence")
     private List<Person> people;
 
     public Residence(String adress, String phone, String email, Timestamp creationdate) {

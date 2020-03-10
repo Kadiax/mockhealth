@@ -91,7 +91,7 @@ public class PersonThreads implements Runnable{
 
             //wait
             try {
-                Thread.currentThread().sleep(1000);
+                Thread.currentThread().sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -85,7 +85,7 @@ public class MockGeneratorController {
             s.setMinglyc(""+MIN_GLYC);
             //hyperglycemia 1,26
             s.setMaxglyc(""+MAX_GLYC);
-            s.setStatus("ON");
+            s.setState(StateEnum.ON);
             s.setPerson(persons.get(i));
 
             i++;

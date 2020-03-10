@@ -4,18 +4,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import java.sql.Timestamp;
 
-@Entity(name="alert")
 public class AlertHealth extends PersistableElement{
-    @Column(name="message")
     private String message;
 
-    @Column(name="startdate")
     private Timestamp startdate;
 
-    @Column(name="criticity")
     private String criticity;
 
-    @Column(name="strapId")
     private Long strapId;
 
     public AlertHealth(String message, Timestamp startdate, String criticity, Long strap) {
