@@ -3,6 +3,7 @@ package lifeprotect.mock.controller;
 import lifeprotect.mock.dao.*;
 import lifeprotect.mock.datamock.PersonThreads;
 import lifeprotect.mock.model.*;
+import lifeprotect.mock.services.MockService;
 
 import java.io.IOException;
 import java.util.*;
@@ -40,13 +41,15 @@ public class MockGeneratorController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        int i =0;
         //Start simulation
-        for (Person p : persons){
-            PersonThreads pth = new PersonThreads(p);
-            //personThreads.add(pth);
-            pth.run();
+        while (i<persons.size()){
+            PersonThreads pth = new PersonThreads(persons.get(i));
+            Thread th = new Thread(pth);
+            th.start();
+            i++;
         }
+
     }
 
     //calcul of thresholds based on persons

@@ -37,77 +37,118 @@ public class PersonThreads implements Runnable{
 
     @Override
     public void run() {
-        System.out.println("START :"+p.toString());
-        int i = 0;
-        //health variables
-        double hearthrate=rdHearthRate(p.getStrap());
-        int systolic=rdSysto(p.getStrap()), diastolic=rdDiasto(p.getStrap()) ,stepcounter=0;
-        double sugarLevel= rdSugarLevel(p.getStrap());
+        if(p.getStrap().getId()==2) {
+            normalHearthRate();
+        }
+       else {
+            anormalhearthrate();
+        }
+    }
 
-        while(i<15){
+    private void anormalhearthrate() {
+        System.out.println("START MOCK:"+p.getFirstName()+" "+p.getLastName());
+        //health variables
+        Double hearthrate=rdHearthRate(p.getStrap());
+        int i=0;
+        while(true){
             /*3 Choices : 1)increment all values, 2)decrement values or lower the stepscounter, 3)generate alerts*/
-            int min = 1, max=3;
+            //increment values
+                hearthrate+=2;
+            if(i>=4)
+                hearthrate+=10;
+
+            HealthHistoric h = createHistoric(hearthrate, null, null, null, null);
+            try {
+                System.out.println(h.toMessage() + ": server " + service.sendMessage(h.toMessage()));
+                i++;
+                Thread.currentThread().sleep(this.HEARTHRATE_INTERVALLE);
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    public void normalHearthRate(){
+        System.out.println("START MOCK:"+p.getFirstName()+" "+p.getLastName());
+        //health variables
+        Double hearthrate=rdHearthRate(p.getStrap());
+        int i =0;
+        while(true){
+            /*3 Choices : 1)increment all values, 2)decrement values or lower the stepscounter, 3)generate alerts*/
+            int min = 1, max=2;
+            int choice = rd.nextInt(max + 1 - min) + min;
+            //increment values
+            if(choice==1)
+                hearthrate+=2;
+            //decrement values
+            else
+                hearthrate-=2;
+
+            HealthHistoric h = createHistoric(hearthrate, null, null, null, null);
+            try {
+                System.out.println(h.toMessage() + ": server " + service.sendMessage(h.toMessage()));
+                i++;
+                Thread.currentThread().sleep(this.HEARTHRATE_INTERVALLE);
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    public void normalTension(){
+        System.out.println("START MOCK:"+p.getFirstName()+" "+p.getLastName());
+        //health variables
+        Double hearthrate=rdHearthRate(p.getStrap());
+        Integer systolic=rdSysto(p.getStrap()), diastolic=rdDiasto(p.getStrap()) ,stepcounter=0;
+        Double sugarLevel= rdSugarLevel(p.getStrap());
+        int i =0;
+        while(true){
+            /*3 Choices : 1)increment all values, 2)decrement values or lower the stepscounter, 3)generate alerts*/
+            int min = 1, max=2;
             int choice = rd.nextInt(max + 1 - min) + min;
             //increment values
             if(choice==1){
                 hearthrate+=2; systolic+=10; diastolic+=5; sugarLevel+=0.2; stepcounter=stepcounter+3;
             }
             //decrement values
-            else if(choice==2){
+            else{
                 hearthrate-=2; systolic-=5; diastolic-=2; sugarLevel-=0.1; stepcounter=stepcounter+2;
             }
-            //create alerts
-            else{
-                if(p.getDeseas()!=null){//if the resident is not sick we don't create alerts
-                    //while alert variable is false we stay in the alert generator
-                    boolean alert=false;
-                    while(!alert) {
-                        int mini = 1, maxi = 2;
-                        int alertchoice = rd.nextInt(maxi + 1 - mini) + mini;
-                        //increment
-                        if (alertchoice == 1) {
-                            hearthrate += 10;
-                            systolic += 10;
-                            diastolic += 10;
-                            sugarLevel += 0.3;
-                        } else {//decrement
-                            hearthrate -= 3;
-                            systolic -= 5;
-                            diastolic -= 5;
-                            sugarLevel -= 0.2;
-                        }
-                        HealthHistoric h = createHistoric(hearthrate, systolic, diastolic, sugarLevel, stepcounter);
-                        //System.err.println(healthHistoricDAO.saveAndFlush(h));
-                        if (isAlert(h)) {
-                            alert = true;
-                        }
-                    }
-                }
-            }
 
-            HealthHistoric h = createHistoric(hearthrate, systolic, diastolic, sugarLevel, stepcounter);
-
-            System.out.println(h.toMessage()+": server "+service.sendMessage(h.toMessage()));
-
-            //wait
+            HealthHistoric h = createHistoric(hearthrate, null, null, null, null);
             try {
-                Thread.currentThread().sleep(2000);
+                System.out.println(h.toMessage() + ": server " + service.sendMessage(h.toMessage()));
+                i++;
+                Thread.currentThread().sleep(this.HEARTHRATE_INTERVALLE);
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            i++;
+
         }
     }
 
+    private HealthHistoric createHistoric(Double hearthrate, Integer systolic, Integer diastolic, Double sugarLevel, Integer stepcounter) {
+        HealthHistoric h =  new HealthHistoric();
+        if (hearthrate != null)
+            h.setHearthrate(String.valueOf((int)Math.abs(hearthrate)));
+        if (systolic != null)
+            h.setHearthrate(String.valueOf(Math.abs(systolic)));
+        if (diastolic != null)
+            h.setHearthrate(String.valueOf(Math.abs(diastolic)));
+        if (sugarLevel != null)
+            h.setHearthrate(String.valueOf(df.format(Math.abs(sugarLevel))));
+        if (stepcounter != null)
+            h.setHearthrate(String.valueOf(Math.abs(stepcounter)));
 
-    private HealthHistoric createHistoric(double hearthrate, int systolic, int diastolic, double sugarLevel, int stepcounter) {
-        return new HealthHistoric(String.valueOf(Math.abs((int)hearthrate)),
-                String.valueOf(Math.abs(systolic)),
-                String.valueOf(Math.abs(diastolic)),
-                String.valueOf(df.format(Math.abs(sugarLevel))),
-                String.valueOf(Math.abs(stepcounter)),
-                new Timestamp(new Date().getTime()),
-                p.getStrap().getId() );
+        h.setStartdate(new Timestamp(new Date().getTime()));
+        h.setStrapid(p.getStrap().getId() );
+
+        return h;
     }
 
     private boolean isAlert(HealthHistoric h) {
@@ -160,13 +201,13 @@ public class PersonThreads implements Runnable{
 
         if (isAlert) {
             AlertHealth a = new AlertHealth(message, new Timestamp(new Date().getTime()), String.valueOf(criticity), s.getId());
-           //alertDAO.saveAndFlush(a);
+            //alertDAO.saveAndFlush(a);
         }
         return isAlert;
     }
 
     private double rdHearthRate(Strap s) {
-         float min = Float.parseFloat(s.getMinvalueref());
+        float min = Float.parseFloat(s.getMinvalueref());
         float max= Float.parseFloat(s.getMaxvalueref());
         return   min + Math.random() * (max - min);
     }
