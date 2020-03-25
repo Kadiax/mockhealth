@@ -37,12 +37,12 @@ public class PersonThreads implements Runnable{
 
     @Override
     public void run() {
-        if(p.getStrap().getId()==2) {
+        //if(p.getStrap().getId()==2) {
             normalHearthRate();
-        }
+       /* }
        else {
             anormalhearthrate();
-        }
+        }*/
     }
 
     private void anormalhearthrate() {
@@ -146,7 +146,7 @@ public class PersonThreads implements Runnable{
             h.setHearthrate(String.valueOf(Math.abs(stepcounter)));
 
         h.setStartdate(new Timestamp(new Date().getTime()));
-        h.setStrapid(p.getStrap().getId() );
+        h.setStrap(p.getStrap().getId() );
 
         return h;
     }
@@ -200,7 +200,7 @@ public class PersonThreads implements Runnable{
 
 
         if (isAlert) {
-            AlertHealth a = new AlertHealth(message, new Timestamp(new Date().getTime()), String.valueOf(criticity), s.getId());
+            //AlertHealth a = new AlertHealth(message, new Timestamp(new Date().getTime()), String.valueOf(criticity), s.getId());
             //alertDAO.saveAndFlush(a);
         }
         return isAlert;

@@ -1,31 +1,40 @@
 package lifeprotect.mock.model;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
 import java.sql.Timestamp;
 
+@Entity(name="healthhistoric")
 public class HealthHistoric extends PersistableElement{
 
+    @Column(name="hearthrate")
     private String hearthrate;
 
+    @Column(name="systolic")
     private String systolic;
 
+    @Column(name="diastolic")
     private String diastolic;
 
+    @Column(name="sugarlevel")
     private String sugarlevel;
 
+    @Column(name="stepcounter")
     private String stepcounter;
 
+    @Column(name="startdate")
     private Timestamp startdate;
 
-    private Long strapid;
+    @Column(name="strapid")
+    private Long strap;
 
-    public HealthHistoric(String hearthrate, String systolic, String diastolic, String sugarlevel, String stepcounter, Timestamp startdate, Long strap) {
+    public HealthHistoric(String hearthrate, String systolic, String diastolic, String sugarlevel, String stepcounter, Long strap) {
         this.hearthrate = hearthrate;
         this.systolic = systolic;
         this.diastolic = diastolic;
         this.sugarlevel = sugarlevel;
         this.stepcounter = stepcounter;
-        this.startdate = startdate;
-        this.strapid = strap;
+        this.strap = strap;
     }
 
     public HealthHistoric(){}
@@ -71,16 +80,13 @@ public class HealthHistoric extends PersistableElement{
         this.stepcounter = stepcounter;
     }
 
-
-
-    public Long getStrapid() {
-        return strapid;
+    public Long getStrap() {
+        return strap;
     }
 
-    public void setStrapid(Long strapid) {
-        this.strapid = strapid;
+    public void setStrap(Long strap) {
+        this.strap = strap;
     }
-
 
     public Timestamp getStartdate() {
         return startdate;
@@ -90,25 +96,13 @@ public class HealthHistoric extends PersistableElement{
         this.startdate = startdate;
     }
 
-    @Override
-    public String toString() {
-        return "HealthHistoric{" +
-                "hearthrate='" + hearthrate + '\'' +
-                ", systolic='" + systolic + '\'' +
-                ", diastolic='" + diastolic + '\'' +
-                ", sugarlevel='" + sugarlevel + '\'' +
-                ", stepcounter='" + stepcounter + '\'' +
-                ", startdate=" + startdate +
-                '}';
-    }
-
     public String toMessage(){
         return "hearthrate=" + hearthrate +
                 ",systolic=" + systolic +
                 ",diastolic=" + diastolic +
                 ",sugarlevel=" + sugarlevel +
                 ",stepcounter=" + stepcounter +
-                ",strapid=" + strapid +
+                ",strapid=" + strap +
                 ",startdate=" + startdate;
 
     }

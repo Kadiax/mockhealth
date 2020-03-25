@@ -1,6 +1,7 @@
 package lifeprotect.mock;
 
 import lifeprotect.mock.controller.MockGeneratorController;
+import lifeprotect.mock.dao.PersonDAO;
 import lifeprotect.mock.services.MockService;
 import org.springframework.boot.Banner;
 import org.springframework.boot.CommandLineRunner;
@@ -13,8 +14,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class MockApplication  implements CommandLineRunner {
 
     private MockGeneratorController mgc;
+    private PersonDAO pdao;
 
-    public MockApplication(){
+    public MockApplication(PersonDAO pdao){
+       this.pdao= pdao;
     }
 
     @Override
@@ -23,7 +26,7 @@ public class MockApplication  implements CommandLineRunner {
         System.out.println("-------------------Mock------------------");
 
         //generate resident mock
-        mgc = new MockGeneratorController();
+        mgc = new MockGeneratorController(pdao);
         mgc.getPersonsMockFromOpenData();
 
 

@@ -5,19 +5,27 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
+@Entity(name="residence")
 public class Residence extends PersistableElement {
 
+    @Column(name="adress")
     private String adress;
 
+    @Column(name="name")
+    private String name;
+
+    @Column(name="phone")
     private String phone;
 
+    @Column(name="email")
     private String email;
 
+    @Column(name="creationdate")
     private Timestamp creationdate;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "residence")
     private List<Person> people;
 
     public Residence(String adress, String phone, String email, Timestamp creationdate) {
@@ -25,12 +33,14 @@ public class Residence extends PersistableElement {
         this.phone = phone;
         this.email = email;
         this.creationdate = creationdate;
-        this.people = new ArrayList<>();
     }
 
     public Residence() {
-        this.people = new ArrayList<>();
     }
+
+    public String getName() { return name; }
+
+    public void setName(String name) { this.name = name; }
 
     public List<Person> getPeople() {
         return people;
@@ -70,30 +80,5 @@ public class Residence extends PersistableElement {
 
     public void setCreationdate(Timestamp creationdate) {
         this.creationdate = creationdate;
-    }
-
-    public void addPerson(Person p){
-        if(!people.contains(p)){
-            people.add(p);
-            p.addResidence(this);
-        }
-    }
-
-    public void removePerson(Person p){
-        if(people.contains(p)){
-            people.remove(p);
-            p.removeResidence(this);
-        }
-    }
-
-    @Override
-    public String toString() {
-        return "Residence{" +
-                "adress='" + adress + '\'' +
-                ", phone='" + phone + '\'' +
-                ", email='" + email + '\'' +
-                ", creationdate=" + creationdate +
-                ", people=" + people +
-                '}';
     }
 }

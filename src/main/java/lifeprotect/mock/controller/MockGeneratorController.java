@@ -9,10 +9,8 @@ import java.io.IOException;
 import java.util.*;
 
 public class MockGeneratorController {
-    private MockResidentDAO mockDAO;
     private List<Person> persons;
     private List<PersonThreads> personThreads;
-
     //HEARTH RATE
     private final static int MIN_HEARTH_RATE = 50;
     private final static int MIN_HEARTH_RATE_FOR_ATHLETE = 30;
@@ -25,22 +23,17 @@ public class MockGeneratorController {
     //DIABETIC
     private final static double MIN_GLYC = 0.45;
     private final static double MAX_GLYC = 1.26;
+    private PersonDAO pdao;
 
 
 
-    public MockGeneratorController(){
-       //opening of csv file and creation of persons
-        mockDAO = new MockResidentDAO();
+    public MockGeneratorController(PersonDAO pdao){
+       //getting list of persons from server
+        this.pdao= pdao;
     }
 
     public void  getPersonsMockFromOpenData(){
-        try {
-            //Creation of persons from csv file
-            this.persons = mockDAO.createPersons();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.persons= pdao.findByUserrole(PersonStatus.RESIDENT);
         int i =0;
         //Start simulation
         while (i<persons.size()){

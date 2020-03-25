@@ -3,41 +3,72 @@ package lifeprotect.mock.model;
 import javax.persistence.*;
 import java.util.List;
 
+@Entity(name = "person")
 public class Person extends PersistableElement{
 
+    @Column(name="firstname")
     private String firstName;
 
+    @Column(name="lastname")
     private String lastName;
 
+    @Column(name="birthdate")
     private String birthdate;
 
+    @Column(name="email")
     private String email;
 
+    @Column(name="phone")
     private String phone;
 
+    @Column(name="handicap")
     private String handicap;
 
+    @Column(name="averageincome")
     private String averageincome;
 
+    @Column(name="login")
     private String login;
 
+    @Column(name="password")
     private String password;
 
+    @Column(name="deseas")
     private String deseas;
 
+    @Column(name="ismobile")
     private String ismobile;
 
+    @Column(name="userevaluation")
     private Long userevaluation;
 
+    @Column(name= "profiletype")
+    private String profiletype ;
+
+    @Enumerated(EnumType.STRING)
     private PersonStatus userrole;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "person")
+    private List<Light> lights;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "person")
+    private List<Shutter> shutters;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "person")
+    private List<Heater> heaters;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "person")
+    private List<Clock> clocks;
+
+    @ManyToOne(cascade = CascadeType.ALL)
     private Residence residence;
 
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "person")
     private Strap strap;
 
     public Person(){}
 
-    public Person(String firstName, String lastName, String birthdate, String email, String phone, String handicap, String averageincome, String login, String password, String deseas, String ismobile, Long userevaluation, PersonStatus userrole) {
+    public Person(String firstName, String lastName, String birthdate, String email, String phone, String handicap, String averageincome, String login, String password, String deseas, String ismobile, Long userevaluation, PersonStatus userrole, String usertype, String profiletype) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthdate = birthdate;
@@ -51,6 +82,7 @@ public class Person extends PersistableElement{
         this.ismobile = ismobile;
         this.userevaluation = userevaluation;
         this.userrole = userrole;
+        this.profiletype = profiletype;
 
     }
 
@@ -118,12 +150,44 @@ public class Person extends PersistableElement{
         this.userrole = userrole;
     }
 
+    public List<Light> getLights() {
+        return lights;
+    }
+
+    public void setLights(List<Light> lights) {
+        this.lights = lights;
+    }
+
+    public List<Shutter> getShutters() {
+        return shutters;
+    }
+
+    public void setShutters(List<Shutter> shutters) {
+        this.shutters = shutters;
+    }
+
     public Strap getStrap() {
         return strap;
     }
 
     public void setStrap(Strap strap) {
         this.strap = strap;
+    }
+
+    public List<Heater> getHeaters() {
+        return heaters;
+    }
+
+    public void setHeaters(List<Heater> heaters) {
+        this.heaters = heaters;
+    }
+
+    public List<Clock> getClocks() {
+        return clocks;
+    }
+
+    public void setClocks(List<Clock> clocks) {
+        this.clocks = clocks;
     }
 
     public Residence getResidence() {
@@ -174,31 +238,11 @@ public class Person extends PersistableElement{
         this.averageincome = averageincome;
     }
 
-    @Override
-    public String toString() {
-        return "Person{" +super.getId()+
-                "firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", birthdate='" + birthdate + '\'' +
-                ", email='" + email + '\'' +
-                ", phone='" + phone + '\'' +
-                ", handicap='" + handicap + '\'' +
-                ", averageincome='" + averageincome + '\'' +
-                ", login='" + login + '\'' +
-                ", password='" + password + '\'' +
-                ", deseas='" + deseas + '\'' +
-                ", ismobile='" + ismobile + '\'' +
-                ", userevaluation=" + userevaluation +
-                ", userrole=" + userrole +
-                '}';
+    public String getProfiletype() {
+        return profiletype;
     }
 
-    public void addResidence(Residence residence) {
-        this.residence = residence;
+    public void setProfiletype(String profiletype) {
+        this.profiletype = profiletype;
     }
-
-    public void removeResidence(Residence residence) {
-        this.residence= null;
-    }
-
 }

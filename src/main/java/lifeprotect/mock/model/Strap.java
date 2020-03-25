@@ -3,26 +3,35 @@ package lifeprotect.mock.model;
 import javax.persistence.*;
 import java.sql.Timestamp;
 
-
+@Entity(name="strap")
 public class Strap extends IOT{
 
+    @Column(name="minsysto")
     private String minsysto;
 
+    @Column(name="maxsysto")
     private String maxsysto;
 
+    @Column(name="mindiasto")
     private String mindiasto;
 
+    @Column(name="maxdiasto")
     private String maxdiasto;
 
+    @Column(name="minglyc")
     private String minglyc;
 
+    @Column(name="maxglyc")
     private String maxglyc;
 
+    @Column(name="minsteps")
     private String minsteps;
 
+    @OneToOne(cascade = CascadeType.ALL, fetch= FetchType.LAZY)
+    @JoinColumn(name = "person_id", referencedColumnName = "id")
     private Person person;
 
-    public Strap(Double price, StatusEnum breakdownstatus, StateEnum state, String ipadress, Timestamp startdate, String minvalueref, String maxvalueref, String suspect, Timestamp activityduration, String minsysto, String maxsysto, String mindiasto,String maxdiasto, String minglyc, String maxglyc, String minsteps, Person person) {
+    public Strap(Double price, StatusEnum breakdownstatus, StateEnum state, String ipadress, Timestamp startdate, String minvalueref, String maxvalueref, String suspect, Timestamp activityduration, String minsysto, String maxsysto, String mindiasto, String maxdiasto, String minglyc, String maxglyc, String minsteps, Person person) {
         super(price, breakdownstatus, state, ipadress, startdate, minvalueref, maxvalueref, suspect, activityduration);
         this.minsysto = minsysto;
         this.maxsysto = maxsysto;
@@ -33,6 +42,7 @@ public class Strap extends IOT{
         this.minsteps = minsteps;
         this.person = person;
     }
+
     public Strap() {}
 
     public String getMinsysto() {

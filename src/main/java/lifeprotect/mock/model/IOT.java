@@ -4,24 +4,37 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+@MappedSuperclass
 public class IOT implements Serializable {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "serial")
     private Long id;
 
+    @Version
+    @Column
     protected Timestamp optlock;
 
+    @Enumerated(EnumType.STRING)
     private StatusEnum breakdownstatus;
 
+    @Enumerated(EnumType.STRING)
     private StateEnum state;
 
+    @Column(name="price")
     private Double price;
 
+    @Column(name="ipadress")
     private String ipadress;
 
+    @Column(name="minvalueref")
     private String minvalueref;
 
+    @Column(name="maxvalueref")
     private String maxvalueref;
 
+    @Column(name="suspect")
     private String suspect;
 
     public IOT(Double price, StatusEnum breakdownstatus, StateEnum state, String ipadress, Timestamp startdate, String minvalueref, String maxvalueref, String suspect, Timestamp activityduration) {
