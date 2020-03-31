@@ -42,7 +42,7 @@ public class PersonThreads implements Runnable{
                 anormalhearthrate();
             }
         }
-       else{
+        else{
             normalHearthRate();
         }
     }
@@ -50,29 +50,46 @@ public class PersonThreads implements Runnable{
     private void anormalhearthrate() {
         //health variables
         Double hearthrate=100.00;
-        int i=0;
+        /*3 Choices : 1)increment all values, 2)decrement values or lower the stepscounter, 3)generate alerts*/
+        int min = 1, max=5;
+        HealthHistoric h = null;
         while(true){
+
+            int choice = rd.nextInt(max + 1 - min) + min;
             //increment values
-
-            if(hearthrate>=Double.parseDouble(p.getStrap().getMaxvalueref()))
-                hearthrate+=1;
-            else
-                hearthrate+=10;
-
-            HealthHistoric h = createHistoric(hearthrate, null, null, null, null);
-            try {
+            if(choice==1) {
+                h = createHistoric(hearthrate += 1, null, null, null, null);
                 System.out.println(p.getFirstName()+" "+p.getLastName()+": "+h.toMessage() + ": server " + service.sendMessage(h.toMessage()));
-                i++;
+            }
+            //decrement values
+            if(choice==2 || choice ==3) {
+                h = createHistoric(hearthrate -= 5, null, null, null, null);
+                System.out.println(p.getFirstName()+" "+p.getLastName()+": "+h.toMessage() + ": server " + service.sendMessage(h.toMessage()));
+            }
+            else {//Alert
+                h = createHistoric(hearthrate += 4, null, null, null, null);
+                System.out.println(p.getFirstName()+" "+p.getLastName()+": "+h.toMessage() + ": server " + service.sendMessage(h.toMessage()));
+            }
+
+            try {
                 Thread.currentThread().sleep(this.HEARTHRATE_INTERVALLE);
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
-            if(hearthrate>=187)
-                normalHearthRate();
 
         }
+    }
+
+    private Double createAlertHearth(Double hearthrate) {
+        Double hearthRateMaxRef = Double.parseDouble(p.getStrap().getMaxvalueref());
+        //Double res = hearthRateMaxRef - hearthrate;
+        while(hearthrate<hearthRateMaxRef+10) {
+            HealthHistoric h = createHistoric(hearthrate+=10, null, null, null, null);
+            System.err.println(p.getFirstName() + " " + p.getLastName() + ": " + h.toMessage() + ": server " + service.sendMessage(h.toMessage()));
+        }
+        return hearthrate;
     }
 
     public void normalHearthRate(){
@@ -86,7 +103,7 @@ public class PersonThreads implements Runnable{
             //increment values
             if(choice==1)
                 hearthrate+=1;
-            //decrement values
+                //decrement values
             else
                 hearthrate-=1;
 
