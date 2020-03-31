@@ -37,12 +37,14 @@ public class PersonThreads implements Runnable{
 
     @Override
     public void run() {
-        //if(p.getStrap().getId()==2) {
+        if (p.getDeseas() != null) {
+            if(p.getDeseas().equals("HEARTPROBLEM")) {
+                anormalhearthrate();
+            }
+        }
+       else{
             normalHearthRate();
-       /* }
-       else {
-            anormalhearthrate();
-        }*/
+        }
     }
 
     private void anormalhearthrate() {
@@ -67,11 +69,13 @@ public class PersonThreads implements Runnable{
                 e.printStackTrace();
             }
 
+            if(hearthrate>=187)
+                normalHearthRate();
+
         }
     }
 
     public void normalHearthRate(){
-        System.out.println("START MOCK:"+p.getFirstName()+" "+p.getLastName());
         //health variables
         Double hearthrate=rdHearthRate(p.getStrap());
         int i =0;
