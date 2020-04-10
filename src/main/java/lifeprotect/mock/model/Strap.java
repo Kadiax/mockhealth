@@ -3,6 +3,7 @@ package lifeprotect.mock.model;
 import javax.persistence.*;
 import java.sql.Timestamp;
 
+
 @Entity(name="strap")
 public class Strap extends IOT{
 
@@ -27,11 +28,14 @@ public class Strap extends IOT{
     @Column(name="minsteps")
     private String minsteps;
 
+    @Column(name="healthstate")
+    private String healthstate;
+
     @OneToOne(cascade = CascadeType.ALL, fetch= FetchType.LAZY)
     @JoinColumn(name = "person_id", referencedColumnName = "id")
     private Person person;
 
-    public Strap(Double price, StatusEnum breakdownstatus, StateEnum state, String ipadress, Timestamp startdate, String minvalueref, String maxvalueref, String suspect, Timestamp activityduration, String minsysto, String maxsysto, String mindiasto, String maxdiasto, String minglyc, String maxglyc, String minsteps, Person person) {
+    public Strap(Double price, StatusEnum breakdownstatus, StateEnum state, String ipadress, Timestamp startdate, String minvalueref, String maxvalueref, String suspect, Timestamp activityduration, String minsysto, String maxsysto, String mindiasto,String maxdiasto, String minglyc, String maxglyc, String minsteps, Person person) {
         super(price, breakdownstatus, state, ipadress, startdate, minvalueref, maxvalueref, suspect, activityduration);
         this.minsysto = minsysto;
         this.maxsysto = maxsysto;
@@ -109,15 +113,25 @@ public class Strap extends IOT{
         this.person = person;
     }
 
+    public String getHealthstate() {
+        return healthstate;
+    }
+
+    public void setHealthstate(String healthstate) {
+        this.healthstate = healthstate;
+    }
+
     @Override
     public String toString() {
         return "Strap{" +
                 "minsysto='" + minsysto + '\'' +
                 ", maxsysto='" + maxsysto + '\'' +
+                ", mindiasto='" + mindiasto + '\'' +
                 ", maxdiasto='" + maxdiasto + '\'' +
                 ", minglyc='" + minglyc + '\'' +
                 ", maxglyc='" + maxglyc + '\'' +
                 ", minsteps='" + minsteps + '\'' +
+                ", healthstate='" + healthstate + '\'' +
                 ", person=" + person +
                 '}';
     }

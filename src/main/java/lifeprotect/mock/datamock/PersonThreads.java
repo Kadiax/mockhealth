@@ -51,7 +51,7 @@ public class PersonThreads implements Runnable{
         //health variables
         Double hearthrate=100.00;
         /*3 Choices : 1)increment all values, 2)decrement values or lower the stepscounter, 3)generate alerts*/
-        int min = 1, max=5;
+        int min = 1, max=4;
         HealthHistoric h = null;
         while(true){
 
@@ -59,17 +59,21 @@ public class PersonThreads implements Runnable{
             //increment values
             if(choice==1) {
                 h = createHistoric(hearthrate += 1, null, null, null, null);
-                System.out.println(p.getFirstName()+" "+p.getLastName()+": "+h.toMessage() + ": server " + service.sendMessage(h.toMessage()));
             }
             //decrement values
-            if(choice==2 || choice ==3) {
-                h = createHistoric(hearthrate -= 5, null, null, null, null);
-                System.out.println(p.getFirstName()+" "+p.getLastName()+": "+h.toMessage() + ": server " + service.sendMessage(h.toMessage()));
+            if(choice==2) {
+                h = createHistoric(hearthrate -= 6, null, null, null, null);
             }
             else {//Alert
                 h = createHistoric(hearthrate += 4, null, null, null, null);
-                System.out.println(p.getFirstName()+" "+p.getLastName()+": "+h.toMessage() + ": server " + service.sendMessage(h.toMessage()));
             }
+
+           /* if(Integer.parseInt(h.getHearthrate())>(Integer.parseInt(p.getStrap().getMaxvalueref())+15))
+                h.setHearthrate("0");//MAX*/
+            if(Integer.parseInt(h.getHearthrate())<0)
+                h.setHearthrate("0");
+
+            System.out.println(p.getFirstName()+" "+p.getLastName()+": "+h.toMessage() + ": server " + service.sendMessage(h.toMessage()));
 
             try {
                 Thread.currentThread().sleep(this.HEARTHRATE_INTERVALLE);
