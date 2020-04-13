@@ -39,7 +39,7 @@ public class PersonThreads implements Runnable{
     public void run() {
         if (p.getDeseas() != null) {
             if(p.getDeseas().equals("HEARTPROBLEM")) {
-                anormalhearthrate();
+                anormalHearthRate();
             }
         }
         else{
@@ -47,44 +47,36 @@ public class PersonThreads implements Runnable{
         }
     }
 
-    private void anormalhearthrate() {
+    private void anormalHearthRate() {
         //health variables
-        Double hearthrate=100.00;
-        /*3 Choices : 1)increment all values, 2)decrement values or lower the stepscounter, 3)generate alerts*/
-        int min = 1, max=4;
-        HealthHistoric h = null;
+        Double hearthrate=rdAnormalHearthRate(p.getStrap());
+        int i =0;
         while(true){
-
+            /*3 Choices : 1)increment all values, 2)decrement values or lower the stepscounter, 3)generate alerts*/
+            int min = 1, max=2;
             int choice = rd.nextInt(max + 1 - min) + min;
             //increment values
-            if(choice==1) {
-                h = createHistoric(hearthrate += 1, null, null, null, null);
-            }
-            //decrement values
-            if(choice==2) {
-                h = createHistoric(hearthrate -= 6, null, null, null, null);
-            }
-            else {//Alert
-                h = createHistoric(hearthrate += 4, null, null, null, null);
-            }
+            if(choice==1)
+                hearthrate+=1;
+                //decrement values
+            else
+                hearthrate-=1;
 
-           /* if(Integer.parseInt(h.getHearthrate())>(Integer.parseInt(p.getStrap().getMaxvalueref())+15))
-                h.setHearthrate("0");//MAX*/
-            if(Integer.parseInt(h.getHearthrate())<0)
-                h.setHearthrate("0");
-
-            System.out.println(p.getFirstName()+" "+p.getLastName()+": "+h.toMessage() + ": server " + service.sendMessage(h.toMessage()));
-
+            HealthHistoric h = createHistoric(hearthrate, null, null, null, null);
             try {
+                System.out.println(p.getFirstName()+" "+p.getLastName()+": "+h.toMessage() + ": server " + service.sendMessage(h.toMessage()));
+                i++;
                 Thread.currentThread().sleep(this.HEARTHRATE_INTERVALLE);
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
-
         }
+
     }
+
+
 
     private Double createAlertHearth(Double hearthrate) {
         Double hearthRateMaxRef = Double.parseDouble(p.getStrap().getMaxvalueref());
@@ -233,6 +225,12 @@ public class PersonThreads implements Runnable{
 
     private double rdHearthRate(Strap s) {
         float min = Float.parseFloat(s.getMinvalueref());
+        float max= Float.parseFloat(s.getMaxvalueref());
+        return   min + Math.random() * (max - min);
+    }
+
+    private Double rdAnormalHearthRate(Strap s) {
+        float min = Float.parseFloat(s.getMaxvalueref()) - 3;
         float max= Float.parseFloat(s.getMaxvalueref());
         return   min + Math.random() * (max - min);
     }
